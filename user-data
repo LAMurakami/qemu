@@ -27,16 +27,34 @@ ssh_authorized_keys:
 
 runcmd:
  - echo
- - echo 'AWS LAM Alaska Allow any to read /var/log/cloud-init-output.log'
+ - echo 'QEMU LAM Alaska Allow any to read /var/log/cloud-init-output.log'
  - chmod a+r /var/log/cloud-init-output.log
  - echo
- - echo 'AWS LAM Alaska Alaska Adding nfs4 mount to ak20:/mnt/ak20-ext4 and ak20:/mnt/ak20-Bk'
+ - echo 'QEMU LAM Alaska Report user-data for this instance (CloudInit directives)'
+ - echo
+ - curl -s http://10.55.5.20:8000/user-data
+ - echo
+ - echo 'QEMU LAM Alaska Set git user name, email for system'
+ - git config --system user.name "LAMurakami"
+ - git config --system user.email GitHub@LAMurakami.com
+ - git config --system core.editor vi
+ - git config --system branch.autosetuprebase always
+ - git config --system init.defaultBranch master
+ - echo
+ - echo 'QEMU LAM Alaska Install etckeeper to track configuration changes'
+ - apt-get install etckeeper
+ - echo
+ - echo 'QEMU LAM Alaska Adding nfs4 mount to ak20:/mnt/ak20-ext4 and ak20:/mnt/ak20-Bk'
  - mkdir /mnt/ak20-ext4 /mnt/ak20-Bk
  - echo "10.55.5.20:/mnt/ak20-ext4  /mnt/ak20-ext4  nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
  - echo "10.55.5.20:/mnt/ak20-Bk    /mnt/ak20-Bk    nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
  - mount -a -t nfs4
  - echo
- - echo 'AWS LAM Alaska Report user-data for this instance (CloudInit directives)'
+ - echo 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
+ - etckeeper commit -m 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
  - echo
- - curl -s http://10.55.5.20:8000/user-data
+ - echo 'QEMU LAM Alaska List Installed Packages information'
+ - dpkg -l
+ - echo
+ - echo 'AWS LAM cloud-init complete'
  - echo
