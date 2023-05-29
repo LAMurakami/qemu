@@ -1,3 +1,2 @@
 instance-id: someid/somehostname
-local-hostname: jammy
-
+local-hostname: fedora
