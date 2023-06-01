@@ -1,3 +1,2 @@
-instance-id: someid/somehostname
-local-hostname: jammy
-
+instance-id: lam0
+local-hostname: ubuntu

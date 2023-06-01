@@ -1,5 +1,5 @@
 #cloud-config
-password: password
+password: ubuntu
 chpasswd:
   expire: False
 
@@ -7,7 +7,7 @@ chpasswd:
 output: {all: '| tee -a /var/log/cloud-init-output.log'}
 
 # Set hostname
-hostname: lam-vm
+hostname: ubuntu
 
 # Set timezone
 timezone: US/Alaska
@@ -19,7 +19,36 @@ package_update: true
 package_upgrade: true
 
 packages:
+ - rcs
  - nfs-common
+ - awscli
+ - mailutils
+ - swish++
+ - libio-captureoutput-perl
+ - libcgi-pm-perl
+ - libdbi-perl
+ - libdbd-mysql-perl
+ - php
+ - php-gd
+ - texlive
+ - php-xml*
+ - lynx
+ - apache2-doc
+ - libapache2-mod-perl2
+ - libbsd-resource-perl
+ - libapache2-reload-perl
+ - apache2-suexec-custom
+ - mariadb-client
+ - mariadb-server
+ - php-mysql
+ - libapache2-mod-php
+ - x11-apps
+ - whois
+ - libgtk2.0-0
+ - plocate
+ - php-mbstring
+ - php-intl
+ - php-apcu
 
 ssh_import_is: [ubuntu]
 ssh_authorized_keys:
@@ -32,7 +61,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM Alaska Report user-data for this instance (CloudInit directives)'
  - echo
- - curl -s http://10.55.5.20:8000/user-data
+ - cat /var/lib/cloud/instances/lam0/user-data.txt
  - echo
  - echo 'QEMU LAM Alaska Set git user name, email for system'
  - git config --system user.name "LAMurakami"
