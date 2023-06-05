@@ -86,6 +86,9 @@ runcmd:
  - swapon /swapfile
  - echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
  - echo
+ - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
+ - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
+ - echo
  - echo 'QEMU LAM Alaska Installing GNU which v2.21 compiled for Ubuntu Server 22.04'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/which-Ubuntu-22-04.tgz --directory /usr/local
  - file /usr/local/bin/which
@@ -93,6 +96,9 @@ runcmd:
  - echo 'QEMU LAM Alaska Installing GNU tnef 1.4.18 compiled for Ubuntu Server 22.04'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/tnef-Ubuntu-22-04.tgz --directory /usr/local
  - file /usr/local/bin/tnef
+ - echo
+ - echo 'QEMU LAM Installing leafpad compiled for Ubuntu Server 22.04'
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/leafpad-Ubuntu-22-04.tgz --directory /usr/local
  - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
  - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/aws /var/www/aws
@@ -113,8 +119,71 @@ runcmd:
  - echo 'QEMU LAM Alaska Installing ubuntu user bash resources'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/ubuntu
  - echo
+ - echo 'QEMU LAM ***** Secure site *****'
+ - echo
+ - echo 'QEMU LAM Installing Let-s Encrypt certificates for TLS encryption (HTTPS)'
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/letsencrypt.tgz --directory /etc
+ - echo
+ - echo 'QEMU LAM Updating apache2 configuration for lam1'
+ - a2enmod ssl
+ - a2enmod info
+ - a2enmod authz_groupfile.load
+ - a2enmod rewrite
+ - a2enmod cgi
+ - echo
+ - echo 'QEMU LAM Tell git installing in /var/www/lam is O.K.'
+ - git config --system --add safe.directory /var/www/lam
+ - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/no-ssl.git /var/www/no-ssl
+ - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
+ - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
+ - rm /etc/apache2/apache2.conf
+ - rm /etc/apache2/mods-available/alias.conf
+ - rm /etc/apache2/mods-available/autoindex.conf
+ - rm /etc/apache2/mods-available/dir.conf
+ - /var/www/no-ssl/Implement_no-ssl_conf.bash
+ - echo
+ - echo 'QEMU LAM Configuring perl to include LAM perl modules'
+ - mkdir /usr/local/lib/site_perl
+ - ln -s /var/www/no-ssl/site_perl-LAM /usr/local/lib/site_perl/LAM
+ # Extract lam from archive that includes MediWiki but not git repo
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/lam.tgz --directory /var/www
+ # Clone the lam repo and integrate it with MediWiki included lam archive
+ - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/lam.git /tmp/lam
+ - mv /tmp/lam/.git /tmp/lam/.gitignore /var/www/lam
+ - rm -rf /tmp/lam # Remove the lam repo fragment
+ - sh -c "cd /var/www/lam;git remote set-url origin git@ak20:lam"
+ # Use lam1 branch to serve secure site at https://ubuntu.lam1.us
+ - sh -c "cd /var/www/lam;git stash"
+ - sh -c "cd /var/www/lam;git checkout lam1"
+ - rm /etc/apache2/mods-available/info.conf
+ - rm /etc/apache2/mods-available/status.conf
+ - /var/www/lam/Implement_lam_conf.bash
+ - echo
+ - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
+ - sed -i "s|aws|ubuntu|" /var/www/no-ssl/apache2.conf
+ - mkdir /var/www/Multicount
+ - chown www-data:www-data /var/www/Multicount
+ - chmod 775 /var/www/Multicount
+ - echo
+ - echo 'QEMU LAM Creating {lam|Mediawiki} database and user'
+ - mysql --table < /var/www/lam/lam-user.sql
+ - echo
+ - echo 'QEMU LAM ***** Final Initialization Steps *****'
+ - echo
  - echo 'QEMU LAM Alaska Set ubuntu as owner of /var/www'
  - chown -R ubuntu:www-data /var/www
+ - echo
+ - echo 'QEMU LAM Refreshing lam database'
+ - ln -s /home/ubuntu/.aws /root/.aws
+ - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
+ - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
+ - echo
+ - echo 'QEMU LAM Install man2html after apache has been configured'
+ - apt-get install -y man2html
+ - echo
+ - echo 'QEMU LAM Alaska Set Secure site for IP Address'
+ - /mnt/ak20-ext4/Install/QEMU/https-lam1-to-IP.bash
+ - systemctl restart apache2
  - echo
  - echo 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
  - etckeeper commit -m 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
@@ -122,5 +191,5 @@ runcmd:
  - echo 'QEMU LAM Alaska List Installed Packages information'
  - dpkg -l
  - echo
- - echo 'AWS LAM cloud-init complete'
+ - echo 'QEMU LAM cloud-init complete'
  - echo
