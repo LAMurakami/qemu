@@ -79,12 +79,10 @@ runcmd:
  - echo "10.55.5.20:/mnt/ak20-Bk    /mnt/ak20-Bk    nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
  - mount -a -t nfs4
  - echo
- - echo 'QEMU LAM Alaska Adding a swapfile'
- - dd if=/dev/zero of=/swapfile bs=32M count=8
- - chmod 600 /swapfile
- - mkswap /swapfile
- - swapon /swapfile
- - echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+ - echo 'QEMU LAM Alaska Adding a swap partition'
+ - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
+ - swapon --all
+ - free
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
@@ -180,6 +178,12 @@ runcmd:
  - echo
  - echo 'QEMU LAM Install man2html after apache has been configured'
  - apt-get install -y man2html
+ - echo
+ - echo 'QEMU LAM Install gitweb after apache has been configured'
+ - apt-get install -y gitweb
+ - a2disconf gitweb
+ - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak20/home/git/|g" /etc/gitweb.conf
  - echo
  - echo 'QEMU LAM Alaska Set Secure site for IP Address'
  - /mnt/ak20-ext4/Install/QEMU/https-lam1-to-IP.bash
