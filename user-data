@@ -28,11 +28,30 @@ runcmd:
  - echo 'QEMU LAM swap space in use'
  - swapon -s
  - echo
- - echo 'AWS LAM Upgrade the instance'
+ - echo 'QEMU LAM Update packages to latest'
+ - dnf -y update
+ - echo
+ - echo 'QEMU LAM Upgrade the instance'
  - dnf -y upgrade
  - echo
- - echo 'AWS LAM Install LAMipedia packages'
- - dnf -y install nfs-utils httpd httpd-manual mod_ssl whois lynx perl-CGI perl-libwww-perl xauth php-fpm php-mysqli php-json php php-devel php-gd php-mbstring php-intl php-mysqlnd php-xml mariadb-server gitweb mod_perl gtk3 perl-DBD-MySQL mlocate texlive libxkbfile xorg-x11-xbitmaps
+ - echo 'QEMU LAM Install LAMipedia packages'
+ - dnf -y install nfs-utils httpd httpd-manual mod_ssl whois lynx perl-CGI perl-libwww-perl xauth php-fpm php-mysqli php-json php php-devel php-gd php-mbstring php-intl php-mysqlnd php-xml mariadb-server mod_perl gtk3 perl-DBD-MySQL mlocate texlive libxkbfile xorg-x11-xbitmaps git bind
+ - echo
+ - echo 'QEMU LAM Set git user name, email for system'
+ - git config --system user.name "LAMurakami"
+ - git config --system user.email GitHub@LAMurakami.com
+ - git config --system core.editor vi
+ - git config --system branch.autosetuprebase always
+ - git config --system init.defaultBranch master
+ - git config --system --add safe.directory /var/www/lam
+ - echo
+ - echo 'QEMU LAM Install etckeeper and perform intitial commit'
+ - dnf -y install etckeeper
+ - etckeeper init
+ - etckeeper commit -m 'QEMU LAM fedora'
+ - echo
+ - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
+ - sed -i '1s/localhost/fedora.lam1.us fedora localhost/' /etc/hosts
  - echo
  - echo 'QEMU LAM Alaska Report user-data for this instance (CloudInit directives)'
  - echo
@@ -44,39 +63,145 @@ runcmd:
  - echo "10.55.5.20:/mnt/ak20-Bk   /mnt/ak20-Bk   nfs4 defaults,nofail,x-systemd.device-timeout=4 0 0" >> /etc/fstab
  - mount -a -t nfs4
  - echo
- - echo 'AWS LAM Installing Amazon Linux 2 ec2-user bash resources for fedora user'
+ - echo 'QEMU LAM Installing Amazon Linux 2 ec2-user bash resources for fedora user'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/Amazom-Linux-2023-ec2-user.tgz --directory /home/fedora
  - echo
- - echo 'AWS LAM Set git user name, email for system'
- - git config --system user.name "LAMurakami"
- - git config --system user.email GitHub@LAMurakami.com
- - git config --system core.editor vi
- - git config --system branch.autosetuprebase always
- - git config --system init.defaultBranch master
- - git config --system --add safe.directory /var/www/lam
- - echo
- - echo 'AWS LAM Report kernel version'
+ - echo 'QEMU LAM Report kernel version'
  - uname -a
  - echo
- - echo 'AWS LAM Report Release version'
+ - echo 'QEMU LAM Report Release version'
  - head /etc/*release
  - echo
- - echo 'AWS LAM Install man2html'
+ - echo 'QEMU LAM Install man2html'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/Amazom-Linux-2023-man2html.tgz --directory /usr/local
  - echo
- - echo 'AWS LAM Install xeyes'
+ - echo 'QEMU LAM Install xeyes'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/Amazom-Linux-2023-xeyes.tgz --directory /usr/local
  - echo
- - echo 'AWS LAM Install xclock'
+ - echo 'QEMU LAM Install xclock'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/Amazom-Linux-2023-xclock.tgz --directory /usr/local
  - echo
- - echo 'AWS LAM Install xlogo'
- - tar -xzf /mnt/efs/Amazon-Linux-2023/Amazom-Linux-2023-xlogo.tgz --directory /usr/local
+ - echo 'QEMU LAM Install xlogo'
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/Amazom-Linux-2023-xlogo.tgz --directory /usr/local
  - echo
- - echo 'AWS LAM Install geany'
+ - echo 'QEMU LAM Install geany'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/geany.tgz --directory /usr/local
  - ldconfig /usr/local/lib
  - echo
- - echo 'AWS LAM Install glances for fedora'
+ - echo 'QEMU LAM Install glances for fedora'
  - dnf -y install glances
  - echo
+ - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
+ - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/aws /var/www/aws
+ - sh -c "cd /var/www/aws;git remote set-url origin git@github.com:LAMurakami/aws"
+ - sh -c "cd /var/www/aws;git remote add ak20 git@ak20:aws"
+ - echo
+ - echo 'QEMU LAM Cloud Guest motd'
+ - ln -s /var/www/aws/etc/update-motd.d/51-cloudguest /etc/update-motd.d
+ - echo
+ - echo 'QEMU LAM Listen for ssh connections on alternate port 55520 and add ssh Banner'
+ - cp /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/sshd_config /etc/ssh/sshd_config
+ - ln -s /var/www/aws/etc/ssh/Banner.txt /etc/ssh
+ - systemctl restart sshd
+ - echo
+ - echo 'QEMU LAM ***** Secure site *****'
+ - echo
+ - echo 'QEMU LAM Install Let-s Encrypt certificates for TLS encryption (HTTPS)'
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/letsencrypt.tgz --directory /etc
+ - echo
+ - echo 'QEMU LAM Install no-ssl web site'
+ - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/no-ssl.git /var/www/no-ssl
+ - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
+ - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
+ - echo
+ - echo 'QEMU LAM Install lam web site'
+ # Extract lam from archive that includes MediWiki but not git repo
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/lam.tgz --directory /var/www
+ # Clone the lam repo and integrate it with MediWiki included lam archive
+ - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/lam.git /tmp/lam
+ - mv /tmp/lam/.git /tmp/lam/.gitignore /var/www/lam
+ - rm -rf /tmp/lam # Remove the lam repo fragment
+ - sh -c "cd /var/www/lam;git remote set-url origin git@ak20:lam"
+ # Use lam1 branch to serve secure site at https://fedora.lam1.us
+ - sh -c "cd /var/www/lam;git stash"
+ - sh -c "cd /var/www/lam;git checkout lam1"
+ - echo
+ - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
+ - sed -i "s|aws|fedora|" /var/www/no-ssl/apache2.conf
+ - echo
+ - echo 'QEMU LAM create Multicount directory'
+ - mkdir /var/www/Multicount
+ - chmod 775 /var/www/Multicount
+ - echo
+ - echo 'QEMU LAM Install LAM perl modules'
+ - mkdir -p /usr/local/share/perl5/5.36
+ - ln -s /var/www/no-ssl/site_perl-LAM /usr/local/share/perl5/5.36/LAM
+ - echo
+ - echo 'QEMU LAM allow Ubuntu apache2 log path or Amazon Linux 2 apache2 log path'
+ - sh -c "cd /var/log;ln -s httpd apache2"
+ - ln -s /var/log/apache2 /etc/httpd/logs
+ - chmod a+rx /var/log/httpd
+ - echo
+ - echo 'QEMU LAM Update main apache2 configuration'
+ - cp /var/www/aws/Amazon-Linux-2-httpd.conf /etc/httpd/conf/httpd.conf
+ - echo
+ - echo 'QEMU LAM Update apache2 ssl configuration'
+ - rm /etc/httpd/conf.d/ssl.conf
+ - sed -i 's|${APACHE_LOG_DIR}|logs|' /var/www/lam/lam_apache2.conf
+ - ln -s /var/www/lam/lam_apache2.conf /etc/httpd/conf.d/ssl.conf
+ - echo
+ - echo 'QEMU LAM Configure /server-status /server-info ReadmeName'
+ - ln -s /var/www/lam/lam_info.conf /etc/httpd/conf.d/info.conf
+ - ln -s /var/www/lam/lam_status.conf /etc/httpd/conf.d/status.conf
+ - sed -i 's/ReadmeName README.html/ReadmeName FOOTER.html/' /etc/httpd/conf.d/autoindex.conf
+ - echo
+ - echo 'QEMU LAM enable and start MariaDB'
+ - systemctl enable mariadb
+ - systemctl start mariadb
+ - echo
+ - echo 'QEMU LAM Install gitweb after apache has been configured'
+ - dnf -y install gitweb
+ - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak20/home/git/|g" /etc/gitweb.conf
+ - echo
+ - echo 'QEMU LAM Creating {lam|Mediawiki} database and user'
+ - mysql --table < /var/www/lam/lam-user.sql
+ - echo 'QEMU LAM Restore latest lam database backup from AWS S3'
+ - ln -s /home/fedora/.aws /root/.aws
+ - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
+ - echo 'QEMU LAM Restore latest LAM Alaska MediaWiki database backup from AWS S3'
+ - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
+ - echo
+ - echo 'QEMU LAM ***** Final Initialization Steps *****'
+ - echo
+ - echo 'QEMU LAM add apache group to fedora'
+ - sh -c "usermod -a -G apache fedora"
+ - echo
+ - echo 'QEMU LAM Create /phpinfo.php page'
+ - [ sh, -c, 'echo "<?php phpinfo(); ?>" > /var/www/lam/html/phpinfo.php' ]
+ - echo
+ - echo 'QEMU LAM Change ownership of /var/www'
+ - chown -R fedora:apache /var/www
+ - echo
+ - echo 'QEMU LAM Alaska Set Secure site for IP Address'
+ - /mnt/ak20-ext4/Install/QEMU/https-lam1-to-IP.bash
+ - echo
+ - echo 'QEMU LAM tell SELinux to be permissive with httpd'
+ - semanage permissive -a httpd_t
+ - echo
+ - echo 'QEMU LAM systemctl start httpd'
+ - systemctl start httpd
+ - echo
+ - echo 'QEMU LAM systemctl enable httpd'
+ - systemctl enable httpd
+ - echo
+ - echo 'QEMU LAM List Installed Packages information'
+ - dnf repoquery -a --installed
+ - echo
+ - echo 'QEMU LAM ***** Update mlocate database *****'
+ - updatedb
+ - echo
+ - echo 'QEMU LAM Final Cloud-init etckeeper commit'
+ - etckeeper commit -m 'QEMU LAM Final Cloud-init etckeeper commit'
+ - echo
+ - echo 'QEMU LAM cloud-init complete'
