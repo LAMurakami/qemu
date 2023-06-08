@@ -150,15 +150,15 @@ runcmd:
  - mv /tmp/lam/.git /tmp/lam/.gitignore /var/www/lam
  - rm -rf /tmp/lam # Remove the lam repo fragment
  - sh -c "cd /var/www/lam;git remote set-url origin git@ak20:lam"
- # Use lam1 branch to serve secure site at https://ubuntu.lam1.us
+ # Use ubuntu branch to serve secure site at https://ubuntu.lam1.us
  - sh -c "cd /var/www/lam;git stash"
- - sh -c "cd /var/www/lam;git checkout lam1"
+ - sh -c "cd /var/www/lam;git checkout ubuntu"
  - rm /etc/apache2/mods-available/info.conf
  - rm /etc/apache2/mods-available/status.conf
  - /var/www/lam/Implement_lam_conf.bash
  - echo
  - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
- - sed -i "s|aws|ubuntu|" /var/www/no-ssl/apache2.conf
+ - sed -i "s|aws|ubuntu|" /etc/apache2/apache2.conf
  - mkdir /var/www/Multicount
  - chown www-data:www-data /var/www/Multicount
  - chmod 775 /var/www/Multicount
@@ -184,9 +184,6 @@ runcmd:
  - a2disconf gitweb
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
  - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak20/home/git/|g" /etc/gitweb.conf
- - echo
- - echo 'QEMU LAM Alaska Set Secure site for IP Address'
- - /mnt/ak20-ext4/Install/QEMU/https-lam1-to-IP.bash
  - systemctl restart apache2
  - echo
  - echo 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
