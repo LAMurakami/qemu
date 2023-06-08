@@ -35,7 +35,7 @@ runcmd:
  - dnf -y upgrade
  - echo
  - echo 'QEMU LAM Install LAMipedia packages'
- - dnf -y install nfs-utils httpd apache-sshd httpd-manual mod_ssl whois lynx perl-CGI perl-libwww-perl xauth php-fpm php-mysqli php-json php php-devel php-gd php-mbstring php-intl php-mysqlnd php-xml mariadb-server mod_perl gtk3 perl-DBD-MySQL mlocate texlive libxkbfile xorg-x11-xbitmaps git bind awscli2
+ - dnf -y install nfs-utils httpd httpd-manual mod_ssl whois lynx perl-CGI perl-libwww-perl xauth php-fpm php-mysqli php-json php php-devel php-gd php-mbstring php-intl php-mysqlnd php-xml mariadb-server mod_perl gtk3 perl-DBD-MySQL mlocate texlive libxkbfile xorg-x11-xbitmaps git bind awscli2
  - echo
  - echo 'QEMU LAM Set git user name, email for system'
  - git config --system user.name "LAMurakami"
@@ -113,8 +113,9 @@ runcmd:
  - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/no-ssl.git /var/www/no-ssl
  - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
  - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
- - rm httpd/conf.d/welcome.conf
- - touch httpd/conf.d/welcome.conf
+ - rm /etc/httpd/conf.d/welcome.conf
+ - touch /etc/httpd/conf.d/welcome.conf
+ - sed -i 's|aws.lam1.us|fedora.lam1.us|' /var/www/no-ssl/no-ssl_apache2.conf
  - ln -s /var/www/no-ssl/no-ssl_apache2.conf /etc/httpd/conf.d/000-no-ssl.conf
  - echo
  - echo 'QEMU LAM Install lam web site'
@@ -125,9 +126,9 @@ runcmd:
  - mv /tmp/lam/.git /tmp/lam/.gitignore /var/www/lam
  - rm -rf /tmp/lam # Remove the lam repo fragment
  - sh -c "cd /var/www/lam;git remote set-url origin git@ak20:lam"
- # Use lam2 branch to serve secure site at https://fedora.lam1.us
+ # Use fedora branch to serve secure site at https://fedora.lam1.us
  - sh -c "cd /var/www/lam;git stash"
- - sh -c "cd /var/www/lam;git checkout lam2"
+ - sh -c "cd /var/www/lam;git checkout fedora"
  - echo
  - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
  - sed -i "s|aws|fedora|" /var/www/no-ssl/apache2.conf
@@ -147,6 +148,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM Update main apache2 configuration'
  - cp /var/www/aws/Amazon-Linux-2-httpd.conf /etc/httpd/conf/httpd.conf
+ - sed -i 's|lama.ServerAdmin|fedora.ServerAdmin|' /etc/httpd/conf/httpd.conf
  - echo
  - echo 'QEMU LAM Update apache2 ssl configuration'
  - rm /etc/httpd/conf.d/ssl.conf
@@ -202,9 +204,6 @@ runcmd:
  - echo
  - echo 'QEMU LAM Change ownership of /var/www'
  - chown -R fedora:apache /var/www
- - echo
- - echo 'QEMU LAM Alaska Set Secure site for https://fedora.lam1.us'
- - /mnt/ak20-ext4/Install/QEMU/https-lam2-to-fedora.bash
  - echo
  - echo 'QEMU LAM tell SELinux to be permissive with httpd'
  - semanage permissive -a httpd_t
