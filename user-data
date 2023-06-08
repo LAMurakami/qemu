@@ -35,7 +35,7 @@ runcmd:
  - dnf -y upgrade
  - echo
  - echo 'QEMU LAM Install LAMipedia packages'
- - dnf -y install nfs-utils httpd httpd-manual mod_ssl whois lynx perl-CGI perl-libwww-perl xauth php-fpm php-mysqli php-json php php-devel php-gd php-mbstring php-intl php-mysqlnd php-xml mariadb-server mod_perl gtk3 perl-DBD-MySQL mlocate texlive libxkbfile xorg-x11-xbitmaps git bind
+ - dnf -y install nfs-utils httpd apache-sshd httpd-manual mod_ssl whois lynx perl-CGI perl-libwww-perl xauth php-fpm php-mysqli php-json php php-devel php-gd php-mbstring php-intl php-mysqlnd php-xml mariadb-server mod_perl gtk3 perl-DBD-MySQL mlocate texlive libxkbfile xorg-x11-xbitmaps git bind awscli2
  - echo
  - echo 'QEMU LAM Set git user name, email for system'
  - git config --system user.name "LAMurakami"
@@ -113,6 +113,9 @@ runcmd:
  - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/no-ssl.git /var/www/no-ssl
  - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
  - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
+ - rm httpd/conf.d/welcome.conf
+ - touch httpd/conf.d/welcome.conf
+ - ln -s /var/www/no-ssl/no-ssl_apache2.conf /etc/httpd/conf.d/000-no-ssl.conf
  - echo
  - echo 'QEMU LAM Install lam web site'
  # Extract lam from archive that includes MediWiki but not git repo
@@ -122,9 +125,9 @@ runcmd:
  - mv /tmp/lam/.git /tmp/lam/.gitignore /var/www/lam
  - rm -rf /tmp/lam # Remove the lam repo fragment
  - sh -c "cd /var/www/lam;git remote set-url origin git@ak20:lam"
- # Use lam1 branch to serve secure site at https://fedora.lam1.us
+ # Use lam2 branch to serve secure site at https://fedora.lam1.us
  - sh -c "cd /var/www/lam;git stash"
- - sh -c "cd /var/www/lam;git checkout lam1"
+ - sh -c "cd /var/www/lam;git checkout lam2"
  - echo
  - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
  - sed -i "s|aws|fedora|" /var/www/no-ssl/apache2.conf
@@ -161,8 +164,12 @@ runcmd:
  - echo
  - echo 'QEMU LAM Install gitweb after apache has been configured'
  - dnf -y install gitweb
+ - sed -i '1 s|Alias /git /var/www/git|Alias /gitweb /var/www/git|' /etc/httpd/conf.d/gitweb.conf
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
  - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak20/home/git/|g" /etc/gitweb.conf
+ - echo
+ - echo 'QEMU LAM tell SELinux gitweb is part of httpd_sys_content_t'
+ - chcon system_u:object_r:httpd_sys_content_t:s0 /var/www/git/gitweb.cgi
  - echo
  - echo 'QEMU LAM Creating {lam|Mediawiki} database and user'
  - mysql --table < /var/www/lam/lam-user.sql
@@ -171,6 +178,19 @@ runcmd:
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
  - echo 'QEMU LAM Restore latest LAM Alaska MediaWiki database backup from AWS S3'
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
+ - echo
+ - echo 'QEMU LAM ***** Additional sites *****'
+ - echo
+ - echo 'QEMU LAM Installing sites.lam1.us web site'
+ - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/sites.git /var/www/sites
+ - sh -c "cd /var/www/sites;git remote set-url origin git@ak20:sites"
+ - ln -s /var/www/sites/sites_apache2.conf /etc/httpd/conf.d/zzz_030_sites.conf
+ - echo
+ - echo 'QEMU LAM Installing arsc.lam1.us web site'
+ - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/arsc /var/www/arsc
+ - sh -c "cd /var/www/arsc;git remote set-url origin git@github.com:LAMurakami/arsc"
+ - sh -c "cd /var/www/arsc;git remote add ak20 git@ak20:arsc"
+ - ln -s /var/www/arsc/arsc_apache2.conf /etc/httpd/conf.d/zzz_060_arsc.conf
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
  - echo
@@ -183,8 +203,8 @@ runcmd:
  - echo 'QEMU LAM Change ownership of /var/www'
  - chown -R fedora:apache /var/www
  - echo
- - echo 'QEMU LAM Alaska Set Secure site for IP Address'
- - /mnt/ak20-ext4/Install/QEMU/https-lam1-to-IP.bash
+ - echo 'QEMU LAM Alaska Set Secure site for https://fedora.lam1.us'
+ - /mnt/ak20-ext4/Install/QEMU/https-lam2-to-fedora.bash
  - echo
  - echo 'QEMU LAM tell SELinux to be permissive with httpd'
  - semanage permissive -a httpd_t
