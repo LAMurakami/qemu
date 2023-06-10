@@ -73,6 +73,9 @@ runcmd:
  - echo 'QEMU LAM Alaska Install etckeeper to track configuration changes'
  - apt-get install etckeeper
  - echo
+ - echo 'AWS LAM Set vim as default editor for system'
+ - update-alternatives --set editor /usr/bin/vim.basic
+ - echo
  - echo 'QEMU LAM Alaska Adding nfs4 mount to ak20:/mnt/ak20-ext4 and ak20:/mnt/ak20-Bk'
  - mkdir /mnt/ak20-ext4 /mnt/ak20-Bk
  - echo "10.55.5.20:/mnt/ak20-ext4  /mnt/ak20-ext4  nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
