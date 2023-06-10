@@ -92,7 +92,7 @@ runcmd:
  - ldconfig /usr/local/lib
  - echo
  - echo 'QEMU LAM Install glances for fedora'
- - dnf -y install glances
+ - dnf -y install glances vim-enhanced
  - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
  - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/aws /var/www/aws
