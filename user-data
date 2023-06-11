@@ -189,6 +189,9 @@ runcmd:
  - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak20/home/git/|g" /etc/gitweb.conf
  - systemctl restart apache2
  - echo
+ - echo 'QEMU LAM Create lam murakami staff credentials.'
+ - /var/www/lam/Create-lam-murakami-staff.bash
+ - echo
  - echo 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
  - etckeeper commit -m 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
  - echo
