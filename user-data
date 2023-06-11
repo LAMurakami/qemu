@@ -223,6 +223,9 @@ runcmd:
  - echo 'QEMU LAM ***** Update mlocate database *****'
  - updatedb
  - echo
+ - echo 'QEMU LAM Create lam murakami staff credentials.'
+ - /var/www/lam/Create-lam-murakami-staff.bash
+ - echo
  - echo 'QEMU LAM Final Cloud-init etckeeper commit'
  - etckeeper commit -m 'QEMU LAM Final Cloud-init etckeeper commit'
  - echo
