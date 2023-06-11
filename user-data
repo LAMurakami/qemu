@@ -50,7 +50,7 @@ runcmd:
  - etckeeper init
  - etckeeper commit -m 'QEMU LAM fedora'
  - echo
- - echo 'AWS LAM Set vi as default editor for system'
+ - echo 'QEMU LAM Set vi as default editor for system'
  - dnf remove -y nano-default-editor
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
