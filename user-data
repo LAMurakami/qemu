@@ -1,5 +1,5 @@
 #cloud-config
-password: ubuntu
+password: debian
 chpasswd:
   expire: False
 
@@ -7,7 +7,7 @@ chpasswd:
 output: {all: '| tee -a /var/log/cloud-init-output.log'}
 
 # Set hostname
-hostname: ubuntu
+hostname: debian
 
 # Set timezone
 timezone: US/Alaska
@@ -49,8 +49,10 @@ packages:
  - php-mbstring
  - php-intl
  - php-apcu
+ - git
+ - xauth
 
-ssh_import_is: [ubuntu]
+ssh_import_is: [debian]
 ssh_authorized_keys:
  - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAYEAnNqVrt71AKSIMmSAIONBx4jIEK0IIZF5fSAaB9kI4oOK+t7aSTKAZwwgKHWJ536XFdR3Ql5Xi0r2CuUEf1GVEagAxLZTXRuim5UGmS63rfSxGwq9JQVg5WDbN5ilnGxSmqsD77SApvmffcO/T2zZWd+rrjMWWRi9zQwRdQRm60bc69ajJbjIJd8SCXIggUPzTkUz5Sca7dhdffcMpGR9bdexFln+YSli1ohtvs2zVBM4ncpufGS+Auax8+gQNr32QeSszlKuKsXYorZ9gl+Z8s62mX5yCXIrH2hWoHsCTUX38iVM8/wI6sPVosarkng7mPOOQLy5k50Y0cb9FRQGlrvmQqsc3fI7tC1fblhKL0HaY844kIZRHwFuOI04ik+b8Swdjed6+FH/RIKppuOY+qfdmv8gcX4ZhpbKg+JN+u5Xy5awpUFqhsbBdCz0MvLNPKEbDNCFokX8nL0HqGeABk2DOJ1+IOFz5pIiCL31LTVGTQ0AwXp3nkaHZykJNrcB Authentication from lam@laptop.lam1.us
 
@@ -71,7 +73,7 @@ runcmd:
  - git config --system init.defaultBranch master
  - echo
  - echo 'QEMU LAM Alaska Install etckeeper to track configuration changes'
- - apt-get install etckeeper
+ - apt-get install -y etckeeper
  - echo
  - echo 'AWS LAM Set vim as default editor for system'
  - update-alternatives --set editor /usr/bin/vim.basic
@@ -80,15 +82,17 @@ runcmd:
  - mkdir /mnt/ak20-ext4 /mnt/ak20-Bk
  - echo "10.55.5.20:/mnt/ak20-ext4  /mnt/ak20-ext4  nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
  - echo "10.55.5.20:/mnt/ak20-Bk    /mnt/ak20-Bk    nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
+ - systemctl daemon-reload
  - mount -a -t nfs4
  - echo
  - echo 'QEMU LAM Alaska Adding a swap partition'
  - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
  - swapon --all
  - free
+ - swapon -s
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
- - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
+ - sed -i '1s/localhost/debian.lam1.us debian localhost/' /etc/hosts
  - echo
  - echo 'QEMU LAM Alaska Installing GNU which v2.21 compiled for Ubuntu Server 22.04'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/which-Ubuntu-22-04.tgz --directory /usr/local
@@ -117,8 +121,8 @@ runcmd:
  - echo 'QEMU LAM Alaska Check US Alaska local time for this system'
  - ls -lF --time-style=long-iso /etc/localtime
  - echo
- - echo 'QEMU LAM Alaska Installing ubuntu user bash resources'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/ubuntu
+ - echo 'QEMU LAM Alaska Installing ubuntu user bash resources for debian'
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/debian
  - echo
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
@@ -153,15 +157,15 @@ runcmd:
  - mv /tmp/lam/.git /tmp/lam/.gitignore /var/www/lam
  - rm -rf /tmp/lam # Remove the lam repo fragment
  - sh -c "cd /var/www/lam;git remote set-url origin git@ak20:lam"
- # Use ubuntu branch to serve secure site at https://ubuntu.lam1.us
+ # Use debian branch to serve secure site at https://debian.lam1.us
  - sh -c "cd /var/www/lam;git stash"
- - sh -c "cd /var/www/lam;git checkout ubuntu"
+ - sh -c "cd /var/www/lam;git checkout debian"
  - rm /etc/apache2/mods-available/info.conf
  - rm /etc/apache2/mods-available/status.conf
  - /var/www/lam/Implement_lam_conf.bash
  - echo
- - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
- - sed -i "s|aws|ubuntu|" /etc/apache2/apache2.conf
+ - echo 'QEMU LAM Update from default to LAM debian web configuration'
+ - sed -i "s|aws|debian|" /etc/apache2/apache2.conf
  - mkdir /var/www/Multicount
  - chown www-data:www-data /var/www/Multicount
  - chmod 775 /var/www/Multicount
@@ -171,11 +175,11 @@ runcmd:
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
  - echo
- - echo 'QEMU LAM Alaska Set ubuntu as owner of /var/www'
- - chown -R ubuntu:www-data /var/www
+ - echo 'QEMU LAM Alaska Set debian as owner of /var/www'
+ - chown -R debian:www-data /var/www
  - echo
  - echo 'QEMU LAM Refreshing lam database'
- - ln -s /home/ubuntu/.aws /root/.aws
+ - ln -s /home/debian/.aws /root/.aws
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
  - echo
