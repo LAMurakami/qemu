@@ -35,7 +35,7 @@ runcmd:
  - dnf -y upgrade
  - echo
  - echo 'QEMU LAM Install LAMipedia packages'
- - dnf -y install nfs-utils httpd httpd-manual mod_ssl whois lynx perl-CGI perl-libwww-perl xauth php-fpm php-mysqli php-json php php-devel php-gd php-mbstring php-intl php-mysqlnd php-xml mariadb-server mod_perl gtk3 perl-DBD-MySQL mlocate texlive libxkbfile xorg-x11-xbitmaps git bind awscli2
+ - dnf -y install nfs-utils httpd httpd-manual mod_ssl whois lynx perl-CGI perl-libwww-perl xauth php-fpm php-mysqli php-json php php-devel php-gd php-mbstring php-intl php-mysqlnd php-xml mariadb-server mod_perl gtk3 perl-DBD-MySQL mlocate texlive libxkbfile xorg-x11-xbitmaps git bind awscli2 leafpad
  - echo
  - echo 'QEMU LAM Set git user name, email for system'
  - git config --system user.name "LAMurakami"
@@ -225,6 +225,9 @@ runcmd:
  - echo
  - echo 'QEMU LAM Create lam murakami staff credentials.'
  - /var/www/lam/Create-lam-murakami-staff.bash
+ - echo
+ - echo 'QEMU LAM Enable x11 forwarding over ssh for sudo'
+ - ln -s /var/www/no-ssl/xauthority.sh /etc/profile.d
  - echo
  - echo 'QEMU LAM Final Cloud-init etckeeper commit'
  - etckeeper commit -m 'QEMU LAM Final Cloud-init etckeeper commit'
