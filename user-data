@@ -18,6 +18,10 @@ package_update: true
 # Upgrade the instance on first boot
 package_upgrade: true
 
+ssh_import_is: [ubuntu]
+ssh_authorized_keys:
+ - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAYEAnNqVrt71AKSIMmSAIONBx4jIEK0IIZF5fSAaB9kI4oOK+t7aSTKAZwwgKHWJ536XFdR3Ql5Xi0r2CuUEf1GVEagAxLZTXRuim5UGmS63rfSxGwq9JQVg5WDbN5ilnGxSmqsD77SApvmffcO/T2zZWd+rrjMWWRi9zQwRdQRm60bc69ajJbjIJd8SCXIggUPzTkUz5Sca7dhdffcMpGR9bdexFln+YSli1ohtvs2zVBM4ncpufGS+Auax8+gQNr32QeSszlKuKsXYorZ9gl+Z8s62mX5yCXIrH2hWoHsCTUX38iVM8/wI6sPVosarkng7mPOOQLy5k50Y0cb9FRQGlrvmQqsc3fI7tC1fblhKL0HaY844kIZRHwFuOI04ik+b8Swdjed6+FH/RIKppuOY+qfdmv8gcX4ZhpbKg+JN+u5Xy5awpUFqhsbBdCz0MvLNPKEbDNCFokX8nL0HqGeABk2DOJ1+IOFz5pIiCL31LTVGTQ0AwXp3nkaHZykJNrcB Authentication from lam@laptop.lam1.us
+
 packages:
  - rcs
  - nfs-common
@@ -50,10 +54,6 @@ packages:
  - php-intl
  - php-apcu
 
-ssh_import_is: [ubuntu]
-ssh_authorized_keys:
- - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAYEAnNqVrt71AKSIMmSAIONBx4jIEK0IIZF5fSAaB9kI4oOK+t7aSTKAZwwgKHWJ536XFdR3Ql5Xi0r2CuUEf1GVEagAxLZTXRuim5UGmS63rfSxGwq9JQVg5WDbN5ilnGxSmqsD77SApvmffcO/T2zZWd+rrjMWWRi9zQwRdQRm60bc69ajJbjIJd8SCXIggUPzTkUz5Sca7dhdffcMpGR9bdexFln+YSli1ohtvs2zVBM4ncpufGS+Auax8+gQNr32QeSszlKuKsXYorZ9gl+Z8s62mX5yCXIrH2hWoHsCTUX38iVM8/wI6sPVosarkng7mPOOQLy5k50Y0cb9FRQGlrvmQqsc3fI7tC1fblhKL0HaY844kIZRHwFuOI04ik+b8Swdjed6+FH/RIKppuOY+qfdmv8gcX4ZhpbKg+JN+u5Xy5awpUFqhsbBdCz0MvLNPKEbDNCFokX8nL0HqGeABk2DOJ1+IOFz5pIiCL31LTVGTQ0AwXp3nkaHZykJNrcB Authentication from lam@laptop.lam1.us
-
 runcmd:
  - echo
  - echo 'QEMU LAM Alaska Allow any to read /var/log/cloud-init-output.log'
@@ -73,22 +73,57 @@ runcmd:
  - echo 'QEMU LAM Alaska Install etckeeper to track configuration changes'
  - apt-get install etckeeper
  - echo
+ - echo 'QEMU LAM Alaska Adding a swap partition'
+ - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
+ - swapon --all
+ - free
+ - swapon -s
+ - echo
+ - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
+ - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
+ - echo
  - echo 'AWS LAM Set vim as default editor for system'
  - update-alternatives --set editor /usr/bin/vim.basic
+ - echo
+ - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
+ - git clone https://github.com/LAMurakami/aws /var/www/aws
+ - sh -c "cd /var/www/aws;git remote set-url origin git@github.com:LAMurakami/aws"
+ - sh -c "cd /var/www/aws;git remote add ak20 git@ak20:aws"
+ - echo
+ - echo 'QEMU LAM Alaska Cloud Guest motd'
+ - ln -s /var/www/aws/etc/update-motd.d/51-cloudguest /etc/update-motd.d
+ - echo
+ - echo 'QEMU LAM Alaska Check US Alaska local time for this system'
+ - ls -lF --time-style=long-iso /etc/localtime
+ - echo
+ - echo 'QEMU LAM Installing no-ssl Apache configuration'
+ - git clone https://github.com/LAMurakami/no-ssl /var/www/no-ssl
+ - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
+ - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
+ - rm /etc/apache2/apache2.conf
+ - rm /etc/apache2/mods-available/alias.conf
+ - rm /etc/apache2/mods-available/autoindex.conf
+ - rm /etc/apache2/mods-available/dir.conf
+ - a2enmod rewrite
+ - /var/www/no-ssl/Implement_no-ssl_conf.bash
+ - echo
+ - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
+ - sed -i "s|aws|ubuntu|" /etc/apache2/apache2.conf
+ - echo
+ - echo 'QEMU LAM Configuring perl to include LAM perl modules'
+ - mkdir /usr/local/lib/site_perl
+ - ln -s /var/www/no-ssl/site_perl-LAM /usr/local/lib/site_perl/LAM
+ - echo
+ - echo 'QEMU LAM Enable x11 forwarding over ssh for sudo'
+ - ln -s /var/www/no-ssl/xauthority.sh /etc/profile.d
+ - echo
+ - echo 'QEMU LAM ***** Use private LAM Alaska resources *****'
  - echo
  - echo 'QEMU LAM Alaska Adding nfs4 mount to ak20:/mnt/ak20-ext4 and ak20:/mnt/ak20-Bk'
  - mkdir /mnt/ak20-ext4 /mnt/ak20-Bk
  - echo "10.55.5.20:/mnt/ak20-ext4  /mnt/ak20-ext4  nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
  - echo "10.55.5.20:/mnt/ak20-Bk    /mnt/ak20-Bk    nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
  - mount -a -t nfs4
- - echo
- - echo 'QEMU LAM Alaska Adding a swap partition'
- - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
- - swapon --all
- - free
- - echo
- - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
- - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
  - echo
  - echo 'QEMU LAM Alaska Installing GNU which v2.21 compiled for Ubuntu Server 22.04'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/which-Ubuntu-22-04.tgz --directory /usr/local
@@ -101,21 +136,10 @@ runcmd:
  - echo 'QEMU LAM Installing leafpad compiled for Ubuntu Server 22.04'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/leafpad-Ubuntu-22-04.tgz --directory /usr/local
  - echo
- - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
- - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/aws /var/www/aws
- - sh -c "cd /var/www/aws;git remote set-url origin git@github.com:LAMurakami/aws"
- - sh -c "cd /var/www/aws;git remote add ak20 git@ak20:aws"
- - echo
- - echo 'QEMU LAM Alaska Cloud Guest motd'
- - ln -s /var/www/aws/etc/update-motd.d/51-cloudguest /etc/update-motd.d
- - echo
  - echo 'QEMU LAM Alaska Listen for ssh connections on alternate port 55520 and add ssh Banner'
  - cp /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/sshd_config /etc/ssh
  - ln -s /var/www/aws/etc/ssh/Banner.txt /etc/ssh
  - systemctl restart sshd
- - echo
- - echo 'QEMU LAM Alaska Check US Alaska local time for this system'
- - ls -lF --time-style=long-iso /etc/localtime
  - echo
  - echo 'QEMU LAM Alaska Installing ubuntu user bash resources'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/ubuntu
@@ -129,23 +153,11 @@ runcmd:
  - a2enmod ssl
  - a2enmod info
  - a2enmod authz_groupfile.load
- - a2enmod rewrite
  - a2enmod cgi
  - echo
  - echo 'QEMU LAM Tell git installing in /var/www/lam is O.K.'
  - git config --system --add safe.directory /var/www/lam
- - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/no-ssl.git /var/www/no-ssl
- - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
- - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
- - rm /etc/apache2/apache2.conf
- - rm /etc/apache2/mods-available/alias.conf
- - rm /etc/apache2/mods-available/autoindex.conf
- - rm /etc/apache2/mods-available/dir.conf
- - /var/www/no-ssl/Implement_no-ssl_conf.bash
  - echo
- - echo 'QEMU LAM Configuring perl to include LAM perl modules'
- - mkdir /usr/local/lib/site_perl
- - ln -s /var/www/no-ssl/site_perl-LAM /usr/local/lib/site_perl/LAM
  # Extract lam from archive that includes MediWiki but not git repo
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/lam.tgz --directory /var/www
  # Clone the lam repo and integrate it with MediWiki included lam archive
@@ -160,8 +172,10 @@ runcmd:
  - rm /etc/apache2/mods-available/status.conf
  - /var/www/lam/Implement_lam_conf.bash
  - echo
- - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
- - sed -i "s|aws|ubuntu|" /etc/apache2/apache2.conf
+ - echo 'QEMU LAM Create lam murakami staff credentials.'
+ - /var/www/lam/Create-lam-murakami-staff.bash
+ - echo
+ - echo 'QEMU LAM Create Multicount directory'
  - mkdir /var/www/Multicount
  - chown www-data:www-data /var/www/Multicount
  - chmod 775 /var/www/Multicount
@@ -188,12 +202,6 @@ runcmd:
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
  - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak20/home/git/|g" /etc/gitweb.conf
  - systemctl restart apache2
- - echo
- - echo 'QEMU LAM Create lam murakami staff credentials.'
- - /var/www/lam/Create-lam-murakami-staff.bash
- - echo
- - echo 'QEMU LAM Enable x11 forwarding over ssh for sudo'
- - ln -s /var/www/no-ssl/xauthority.sh /etc/profile.d
  - echo
  - echo 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
  - etckeeper commit -m 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
