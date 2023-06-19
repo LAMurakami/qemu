@@ -1,5 +1,5 @@
 #cloud-config
-password: ubuntu
+password: opensuse
 chpasswd:
   expire: False
 
@@ -7,52 +7,40 @@ chpasswd:
 output: {all: '| tee -a /var/log/cloud-init-output.log'}
 
 # Set hostname
-hostname: ubuntu
+hostname: opensuse
 
 # Set timezone
 timezone: US/Alaska
 
-# Upgrade apt database on first boot
-package_update: true
-
-# Upgrade the instance on first boot
-package_upgrade: true
-
-ssh_import_is: [ubuntu]
+ssh_import_is: [opensuse]
 ssh_authorized_keys:
  - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAYEAnNqVrt71AKSIMmSAIONBx4jIEK0IIZF5fSAaB9kI4oOK+t7aSTKAZwwgKHWJ536XFdR3Ql5Xi0r2CuUEf1GVEagAxLZTXRuim5UGmS63rfSxGwq9JQVg5WDbN5ilnGxSmqsD77SApvmffcO/T2zZWd+rrjMWWRi9zQwRdQRm60bc69ajJbjIJd8SCXIggUPzTkUz5Sca7dhdffcMpGR9bdexFln+YSli1ohtvs2zVBM4ncpufGS+Auax8+gQNr32QeSszlKuKsXYorZ9gl+Z8s62mX5yCXIrH2hWoHsCTUX38iVM8/wI6sPVosarkng7mPOOQLy5k50Y0cb9FRQGlrvmQqsc3fI7tC1fblhKL0HaY844kIZRHwFuOI04ik+b8Swdjed6+FH/RIKppuOY+qfdmv8gcX4ZhpbKg+JN+u5Xy5awpUFqhsbBdCz0MvLNPKEbDNCFokX8nL0HqGeABk2DOJ1+IOFz5pIiCL31LTVGTQ0AwXp3nkaHZykJNrcB Authentication from lam@laptop.lam1.us
 
 packages:
+ - git
  - rcs
- - nfs-common
- - awscli
- - mailutils
- - swish++
- - libio-captureoutput-perl
- - libcgi-pm-perl
- - libdbi-perl
- - libdbd-mysql-perl
- - php
- - php-gd
+ - nfs-kernel-server
+ - aws-cli
+ - php8
+ - php8-gd
  - texlive
- - php-xml*
  - lynx
  - apache2-doc
- - libapache2-mod-perl2
- - libbsd-resource-perl
- - libapache2-reload-perl
- - apache2-suexec-custom
+ - apache2-mod_perl
  - mariadb-client
- - mariadb-server
- - php-mysql
- - libapache2-mod-php
- - x11-apps
+ - mariadb
+ - php8-mysql
+ - apache2-mod_php8
  - whois
- - libgtk2.0-0
- - plocate
- - php-mbstring
- - php-intl
- - php-apcu
+ - gtk2-devel
+ - mlocate
+ - php8-mbstring
+ - php8-intl
+ - php8-APCu
+ - leafpad
+ - vim
+ - man
+ - xauth
 
 runcmd:
  - echo
@@ -70,8 +58,19 @@ runcmd:
  - git config --system branch.autosetuprebase always
  - git config --system init.defaultBranch master
  - echo
+ - echo 'QEMU LAM link which to /usr/local/bin *****'
+ - ln -s /usr/bin/which /usr/local/bin/which
+ - echo
  - echo 'QEMU LAM Alaska Install etckeeper to track configuration changes'
- - apt-get install etckeeper
+ - zypper --non-interactive install etckeeper
+ - echo
+ - echo 'QEMU LAM Initialize etckeeper'
+ - etckeeper init
+ - etckeeper commit -m 'QEMU LAM Initial Cloud-init commit'
+ - echo
+ - echo 'QEMU LAM enable and start MariaDB'
+ - systemctl enable mariadb
+ - systemctl start mariadb
  - echo
  - echo 'QEMU LAM Alaska Adding a swap partition'
  - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
@@ -80,10 +79,7 @@ runcmd:
  - swapon -s
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
- - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
- - echo
- - echo 'AWS LAM Set vim as default editor for system'
- - update-alternatives --set editor /usr/bin/vim.basic
+ - sed -i '1s/localhost/opensuse.lam1.us opensuse localhost/' /etc/hosts
  - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
  - git clone https://github.com/LAMurakami/aws /var/www/aws
@@ -108,7 +104,7 @@ runcmd:
  - /var/www/no-ssl/Implement_no-ssl_conf.bash
  - echo
  - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
- - sed -i "s|aws|ubuntu|" /etc/apache2/apache2.conf
+ - sed -i "s|aws|opensuse|" /etc/apache2/apache2.conf
  - echo
  - echo 'QEMU LAM Configuring perl to include LAM perl modules'
  - mkdir /usr/local/lib/site_perl
@@ -125,24 +121,13 @@ runcmd:
  - echo "10.55.5.20:/mnt/ak20-Bk    /mnt/ak20-Bk    nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
  - mount -a -t nfs4
  - echo
- - echo 'QEMU LAM Alaska Installing GNU which v2.21 compiled for Ubuntu Server 22.04'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/which-Ubuntu-22-04.tgz --directory /usr/local
- - file /usr/local/bin/which
- - echo
- - echo 'QEMU LAM Alaska Installing GNU tnef 1.4.18 compiled for Ubuntu Server 22.04'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/tnef-Ubuntu-22-04.tgz --directory /usr/local
- - file /usr/local/bin/tnef
- - echo
- - echo 'QEMU LAM Installing leafpad compiled for Ubuntu Server 22.04'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/leafpad-Ubuntu-22-04.tgz --directory /usr/local
- - echo
  - echo 'QEMU LAM Alaska Listen for ssh connections on alternate port 55520 and add ssh Banner'
  - cp /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/sshd_config /etc/ssh
  - ln -s /var/www/aws/etc/ssh/Banner.txt /etc/ssh
  - systemctl restart sshd
  - echo
  - echo 'QEMU LAM Alaska Installing ubuntu user bash resources'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/ubuntu
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/opensuse
  - echo
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
@@ -165,9 +150,9 @@ runcmd:
  - mv /tmp/lam/.git /tmp/lam/.gitignore /var/www/lam
  - rm -rf /tmp/lam # Remove the lam repo fragment
  - sh -c "cd /var/www/lam;git remote set-url origin git@ak20:lam"
- # Use ubuntu branch to serve secure site at https://ubuntu.lam1.us
+ # Use opensuse branch to serve secure site at https://opensuse.lam1.us
  - sh -c "cd /var/www/lam;git stash"
- - sh -c "cd /var/www/lam;git checkout ubuntu"
+ - sh -c "cd /var/www/lam;git checkout opensuse"
  - rm /etc/apache2/mods-available/info.conf
  - rm /etc/apache2/mods-available/status.conf
  - /var/www/lam/Implement_lam_conf.bash
@@ -177,7 +162,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM Create Multicount directory'
  - mkdir /var/www/Multicount
- - chown www-data:www-data /var/www/Multicount
+ - chown wwwrun:www /var/www/Multicount
  - chmod 775 /var/www/Multicount
  - echo
  - echo 'QEMU LAM Creating {lam|Mediawiki} database and user'
@@ -185,29 +170,25 @@ runcmd:
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
  - echo
- - echo 'QEMU LAM Alaska Set ubuntu as owner of /var/www'
- - chown -R ubuntu:www-data /var/www
+ - echo 'QEMU LAM Alaska Set opensuse as owner of /var/www'
+ - chown -R opensuse:www /var/www
  - echo
  - echo 'QEMU LAM Refreshing lam database'
- - ln -s /home/ubuntu/.aws /root/.aws
+ - ln -s /home/opensuse/.aws /root/.aws
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
  - echo
- - echo 'QEMU LAM Install man2html after apache has been configured'
- - apt-get install -y man2html
- - echo
- - echo 'QEMU LAM Install gitweb after apache has been configured'
- - apt-get install -y gitweb
- - a2disconf gitweb
- - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
- - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak20/home/git/|g" /etc/gitweb.conf
- - systemctl restart apache2
+ - echo 'QEMU LAM Update all packages replacing files if necessary'
+ - zypper --non-interactive update --replacefiles
  - echo
  - echo 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
  - etckeeper commit -m 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
  - echo
  - echo 'QEMU LAM Alaska List Installed Packages information'
- - dpkg -l
+ - zypper search -i
+ - echo
+ - echo 'QEMU LAM report reboot hint'
+ - zypper ps -s
  - echo
  - echo 'QEMU LAM cloud-init complete'
  - echo
