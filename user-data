@@ -41,6 +41,9 @@ packages:
  - vim
  - man
  - xauth
+ - perl-CGI
+ - perl-DBI
+ - perl-DBD-mysql
 
 runcmd:
  - echo
@@ -96,19 +99,12 @@ runcmd:
  - git clone https://github.com/LAMurakami/no-ssl /var/www/no-ssl
  - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
  - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
- - rm /etc/apache2/apache2.conf
- - rm /etc/apache2/mods-available/alias.conf
- - rm /etc/apache2/mods-available/autoindex.conf
- - rm /etc/apache2/mods-available/dir.conf
+ - rm /etc/apache2/default-server.conf
+ - cp /var/www/no-ssl/opensuse/etc/apache2/default-server.conf /etc/apache2/default-server.conf
  - a2enmod rewrite
- - /var/www/no-ssl/Implement_no-ssl_conf.bash
- - echo
- - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
- - sed -i "s|aws|opensuse|" /etc/apache2/apache2.conf
  - echo
  - echo 'QEMU LAM Configuring perl to include LAM perl modules'
- - mkdir /usr/local/lib/site_perl
- - ln -s /var/www/no-ssl/site_perl-LAM /usr/local/lib/site_perl/LAM
+ - ln -s /var/www/no-ssl/site_perl-LAM /usr/lib/perl5/site_perl/LAM
  - echo
  - echo 'QEMU LAM Enable x11 forwarding over ssh for sudo'
  - ln -s /var/www/no-ssl/xauthority.sh /etc/profile.d
@@ -153,9 +149,6 @@ runcmd:
  # Use opensuse branch to serve secure site at https://opensuse.lam1.us
  - sh -c "cd /var/www/lam;git stash"
  - sh -c "cd /var/www/lam;git checkout opensuse"
- - rm /etc/apache2/mods-available/info.conf
- - rm /etc/apache2/mods-available/status.conf
- - /var/www/lam/Implement_lam_conf.bash
  - echo
  - echo 'QEMU LAM Create lam murakami staff credentials.'
  - /var/www/lam/Create-lam-murakami-staff.bash
@@ -180,6 +173,13 @@ runcmd:
  - echo
  - echo 'QEMU LAM Update all packages replacing files if necessary'
  - zypper --non-interactive update --replacefiles
+ - echo
+ - echo 'QEMU LAM enable and start apache2'
+ - systemctl enable apache2
+ - systemctl start apache2
+ - echo
+ - echo 'QEMU LAM ***** Update mlocate database *****'
+ - updatedb
  - echo
  - echo 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
  - etckeeper commit -m 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
