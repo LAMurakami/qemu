@@ -135,10 +135,13 @@ runcmd:
  - echo
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
+ - echo 'QEMU LAM Alaska Second Cloud-init etckeeper commit'
+ - etckeeper commit -m 'QEMU LAM Alaska Second Cloud-init etckeeper commit'
+ - echo
  - echo 'QEMU LAM Installing Let-s Encrypt certificates for TLS encryption (HTTPS)'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/letsencrypt.tgz --directory /etc
  - echo
- - echo 'QEMU LAM Alaska Second Cloud-init etckeeper commit'
+ - echo 'QEMU LAM Alaska Let-s Encrypt certificates etckeeper commit'
  - etckeeper commit -m 'QEMU LAM Alaska Second Cloud-init etckeeper commit'
  - echo
  - echo 'QEMU LAM Updating apache2 configuration for lam1'
@@ -162,6 +165,13 @@ runcmd:
  - sh -c "cd /var/www/lam;git stash"
  - sh -c "cd /var/www/lam;git checkout opensuse"
  - echo
+ - echo 'QEMU LAM Configure /server-info and /server-status'
+ - rm /etc/apache2/mod_info.conf
+ - ln -s /var/www/lam/lam_info.conf /etc/apache2/mod_info.conf
+ - rm /etc/apache2/mod_status.conf
+ - ln -s /var/www/lam/lam_status.conf /etc/apache2/mod_status.conf
+ - a2enmod mod_status
+ - echo
  - echo 'QEMU LAM Create lam murakami staff credentials.'
  - /var/www/lam/Create-lam-murakami-staff.bash
  - echo
@@ -174,6 +184,12 @@ runcmd:
  - mysql --table < /var/www/lam/lam-user.sql
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
+ - echo
+ - echo 'QEMU LAM Install gitweb after apache has been configured'
+ - zypper --non-interactive install git-web
+ - sed -i '1 s|Alias /git "/usr/share/gitweb/"|Alias /gitweb "/usr/share/gitweb/"|' /etc/apache2/conf.d/gitweb.conf
+ - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak20/home/git/|g" /etc/gitweb.conf
  - echo
  - echo 'QEMU LAM Alaska Set opensuse as owner of /var/www'
  - chown -R opensuse:www /var/www
