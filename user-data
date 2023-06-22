@@ -44,6 +44,9 @@ packages:
  - perl-CGI
  - perl-DBI
  - perl-DBD-mysql
+ - php8-ctype
+ - php8-iconv
+ - php8-fileinfo
 
 runcmd:
  - echo
