@@ -103,6 +103,11 @@ runcmd:
  - cp /var/www/no-ssl/opensuse/etc/apache2/default-server.conf /etc/apache2/default-server.conf
  - a2enmod rewrite
  - echo
+ - echo 'QEMU LAM Alaska Installing z.lam1.us web site (for /About/Public)'
+ - git clone https://github.com/LAMurakami/z /var/www/z
+ - sh -c "cd /var/www/z;git remote set-url origin git@github.com:LAMurakami/z"
+ - sh -c "cd /var/www/z;git remote add ak20 git@ak20:z"
+ - echo
  - echo 'QEMU LAM Configuring perl to include LAM perl modules'
  - ln -s /var/www/no-ssl/site_perl-LAM /usr/lib/perl5/site_perl/LAM
  - echo
@@ -130,11 +135,15 @@ runcmd:
  - echo 'QEMU LAM Installing Let-s Encrypt certificates for TLS encryption (HTTPS)'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/letsencrypt.tgz --directory /etc
  - echo
+ - echo 'QEMU LAM Alaska Second Cloud-init etckeeper commit'
+ - etckeeper commit -m 'QEMU LAM Alaska Second Cloud-init etckeeper commit'
+ - echo
  - echo 'QEMU LAM Updating apache2 configuration for lam1'
- - a2enmod ssl
  - a2enmod info
  - a2enmod authz_groupfile.load
- - a2enmod cgi
+ - a2enflag SSL
+ - a2enflag STATUS
+ - ln -s /var/www/no-ssl/opensuse/etc/apache2/vhosts.d/ssl.conf /etc/apache2/vhosts.d/ssl.conf
  - echo
  - echo 'QEMU LAM Tell git installing in /var/www/lam is O.K.'
  - git config --system --add safe.directory /var/www/lam
