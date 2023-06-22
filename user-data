@@ -89,7 +89,7 @@ runcmd:
  - swapon -s
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
- - sed -i '1s/localhost/opensuse.lam1.us opensuse localhost/' /etc/hosts
+ - sed -i '12s/localhost/opensuse.lam1.us opensuse localhost/' /etc/hosts
  - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
  - git clone https://github.com/LAMurakami/aws /var/www/aws
@@ -108,6 +108,7 @@ runcmd:
  - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
  - rm /etc/apache2/default-server.conf
  - cp /var/www/no-ssl/opensuse/etc/apache2/default-server.conf /etc/apache2/default-server.conf
+ - a2enmod mod_perl
  - a2enmod rewrite
  - echo
  - echo 'QEMU LAM Alaska Installing z.lam1.us web site (for /About/Public)'
@@ -139,12 +140,15 @@ runcmd:
  - echo
  - echo 'QEMU LAM Install xeyes'
  - tar -xzf /mnt/ak20-ext4/Install/QEMU/opensuse/openSUSE-15-xeyes.tgz --directory /usr/local
+ - ln -s /usr/local/bin/xeyes /bin/xeyes
  - echo
  - echo 'QEMU LAM Install xclock'
  - tar -xzf /mnt/ak20-ext4/Install/QEMU/opensuse/openSUSE-15-xclock.tgz --directory /usr
+ - ln -s /usr/local/bin/xclock /bin/xclock
  - echo
  - echo 'QEMU LAM Install xlogo'
  - tar -xzf /mnt/ak20-ext4/Install/QEMU/opensuse/openSUSE-15-xlogo.tgz --directory /usr
+ - ln -s /usr/local/bin/xlogo /bin/xlogo
  - echo
  - echo 'QEMU LAM Alaska Installing ubuntu user bash resources'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/opensuse
