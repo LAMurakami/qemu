@@ -50,6 +50,7 @@ packages:
  - libXmu6
  - libxkbfile1
  - libXaw7
+ - python3-glances
 
 runcmd:
  - echo
