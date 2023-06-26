@@ -10,7 +10,8 @@ files although the vendor-data file is always empty as in the tutorial.
 These files are served up by the ad hoc IMDS webserver using Python built-in
 webserver.  The IMDS webserver URL is specified in the launch command.
 
-The user-data files are patterned after the cloud-init files in the aws repo
+The user-data files are patterned after the cloud-init files in the
+[aws repo](https://github.com/LAMurakami/aws#readme)
 that launch a LAM Alaska clone on an AWS instance.  There are cloud-init files
 to launch a LAM Alaska clone on an AWS instance on either x86 or ARM with
 Ubuntu Server 22.04, Amazon Linux 2023 or Amazon Linux 2 as the OS.
