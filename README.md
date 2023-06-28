@@ -10,6 +10,20 @@ files although the vendor-data file is always empty as in the tutorial.
 These files are served up by the ad hoc IMDS webserver using Python built-in
 webserver.  The IMDS webserver URL is specified in the launch command.
 
+### This branch is not intended to be merged into the master branch
+
+This QEMU (Quick Emulator) repository branch is for the Fedora OS and is not intended to me merged into the master branch for Ubuntu.
+
+In Git, a branch is a new/separate version of the main repository.
+
+GitHub and git in general assume you want to merge any other branches with the main or master branch of the repository at some point.  There are a lot of strategies for use of git branching for feature development and release or hotfix management with some also using git tags.  They generally try to make naming an intuitive part of the change flow control.
+
+[Git considers itself a Distributed Version Control System](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control) which is better than both Centralized version control and Local Version Control.  It considers every change a version and branches and commits are all part of this approach to version control.
+
+This allows a great amount of flexibility including this branch for this purpose.
+
+### The user-data files launch a LAM Alaska clone
+
 The user-data files are patterned after the cloud-init files in the
 [aws repo](https://github.com/LAMurakami/aws#readme)
 that launch a LAM Alaska clone on an AWS instance.  There are cloud-init files
