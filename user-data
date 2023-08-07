@@ -78,14 +78,8 @@ runcmd:
  - echo 'QEMU LAM Install man2html'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/Amazom-Linux-2023-man2html.tgz --directory /usr/local
  - echo
- - echo 'QEMU LAM Install xeyes'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/Amazom-Linux-2023-xeyes.tgz --directory /usr/local
- - echo
- - echo 'QEMU LAM Install xclock'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/Amazom-Linux-2023-xclock.tgz --directory /usr/local
- - echo
- - echo 'QEMU LAM Install xlogo'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/Amazom-Linux-2023-xlogo.tgz --directory /usr/local
+ - echo 'QEMU LAM Install x11 apps'
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/xapps-AL2023-x86.tgz --directory /usr
  - echo
  - echo 'QEMU LAM Install geany'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/geany.tgz --directory /usr/local
