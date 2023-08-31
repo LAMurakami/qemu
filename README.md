@@ -1,4 +1,4 @@
-## QEMU (Quick Emulator) repository
+## QEMU (Quick Emulator) cloud-init repository
 
 This repo is based on the
 [Core tutorial with QEMU](https://cloudinit.readthedocs.io/en/latest/tutorial/qemu.html)
@@ -37,7 +37,7 @@ master branch is for an Ubuntu cloud image as specified in the tutorial.
 The fedora, debian, and opensuse branches are for the respective OS.
 
 With 512 MiB of memory specified along with two cores I have a QEMU instance
-with similar capabilities as an AWS EC2 t3.nano type instance.
+with similar capabilities as the AWS EC2 t3.nano and t4g.nano type instances.
 
 A second drive with a swap partition is specified in the launch command
 along with the drive with the bootable OS image and is used to allow a
