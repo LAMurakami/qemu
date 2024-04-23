@@ -171,13 +171,8 @@ runcmd:
  - echo 'QEMU LAM Tell git installing in /var/www/lam is O.K.'
  - git config --system --add safe.directory /var/www/lam
  - echo
- # Extract lam from archive that includes MediWiki but not git repo
+ # Extract lam from archive that includes MediWiki
  - aws s3 cp s3://lamurakami/lam.tgz - | tar -xzf - --directory /var/www
- # Clone the lam repo and integrate it with MediWiki included lam archive
- - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/lam.git /tmp/lam
- - mv /tmp/lam/.git /tmp/lam/.gitignore /var/www/lam
- - rm -rf /tmp/lam # Remove the lam repo fragment
- - sh -c "cd /var/www/lam;git remote set-url origin git@ak20:lam"
  # Use debian branch to serve secure site at https://debian.lam1.us
  - sh -c "cd /var/www/lam;git stash"
  - sh -c "cd /var/www/lam;git checkout debian"
