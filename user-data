@@ -119,6 +119,13 @@ runcmd:
  - echo 'QEMU LAM Enable x11 forwarding over ssh for sudo'
  - ln -s /var/www/no-ssl/xauthority.sh /etc/profile.d
  - echo
+ - echo 'QEMU LAM Alaska Installing gci.lam1.us web site'
+ - git clone https://github.com/LAMurakami/gci /var/www/gci
+ - sh -c "cd /var/www/gci;git remote set-url origin git@github.com:LAMurakami/gci"
+ - sh -c "cd /var/www/gci;git remote add ak20 git@ak20:gci"
+ - ln -s /var/www/gci/gci_apache2.conf /etc/apache2/sites-available/000-gci.conf
+ - a2ensite 000-gci
+ - echo
  - echo 'QEMU LAM ***** Use private LAM Alaska resources *****'
  - echo
  - echo 'QEMU LAM Alaska Adding nfs4 mount to ak20:/mnt/ak20-ext4 and ak20:/mnt/ak20-Bk'
@@ -191,12 +198,11 @@ runcmd:
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
  - echo
- - echo 'QEMU LAM Alaska Set debian as owner of /var/www'
- - chown -R debian:www-data /var/www
+ - echo 'QEMU LAM Alaska Set lam as owner of /var/www'
+ - chown -R lam:www-data /var/www
  - chown -R debian:debian /home/debian
  - echo
  - echo 'QEMU LAM Refreshing lam database'
- - ln -s /home/debian/.aws /root/.aws
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
  - echo
