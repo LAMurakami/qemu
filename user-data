@@ -134,6 +134,7 @@ runcmd:
  - echo "10.55.5.20:/mnt/ak20-Bk    /mnt/ak20-Bk    nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
  - systemctl daemon-reload
  - mount -a -t nfs4
+ - df -Th --exclude-type=tmpfs --exclude-type=devtmpfs
  - echo
  - echo 'QEMU LAM Alaska Installing GNU which v2.21 compiled for Ubuntu Server 22.04'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/which-Ubuntu-22-04.tgz --directory /usr/local
