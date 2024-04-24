@@ -162,7 +162,7 @@ runcmd:
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
  - echo 'QEMU LAM Installing Let-s Encrypt certificates for TLS encryption (HTTPS)'
- - aws s3 cp s3://lamurakami/aws-lam1-ubuntu/letsencrypt.tgz - | tar -xzf - --directory /etc
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/letsencrypt.tgz --directory /etc
  - echo
  - echo 'QEMU LAM Updating apache2 configuration for lam1'
  - a2enmod ssl
@@ -174,7 +174,7 @@ runcmd:
  - git config --system --add safe.directory /var/www/lam
  - echo
  # Extract lam from archive that includes MediWiki
- - aws s3 cp s3://lamurakami/lam.tgz - | tar -xzf - --directory /var/www
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/lam.tgz --directory /var/www
  # Use debian branch to serve secure site at https://debian.lam1.us
  - sh -c "cd /var/www/lam;git stash"
  - sh -c "cd /var/www/lam;git checkout debian"
