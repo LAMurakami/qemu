@@ -83,6 +83,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '1s/localhost/debian.lam1.us debian localhost/' /etc/hosts
+ - echo '10.55.5.20 ak20.lam1.us ak20' >> /etc/hosts
  - echo
  - echo 'QEMU LAM Set vim as default editor for system'
  - update-alternatives --set editor /usr/bin/vim.basic
@@ -130,8 +131,8 @@ runcmd:
  - echo
  - echo 'QEMU LAM Alaska Adding nfs4 mount to ak20:/mnt/ak20-ext4 and ak20:/mnt/ak20-Bk'
  - mkdir /mnt/ak20-ext4 /mnt/ak20-Bk
- - echo "10.55.5.20:/mnt/ak20-ext4  /mnt/ak20-ext4  nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
- - echo "10.55.5.20:/mnt/ak20-Bk    /mnt/ak20-Bk    nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
+ - echo "ak20:/mnt/ak20-ext4  /mnt/ak20-ext4  nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
+ - echo "ak20:/mnt/ak20-Bk    /mnt/ak20-Bk    nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
  - systemctl daemon-reload
  - mount -a -t nfs4
  - df -Th --exclude-type=tmpfs --exclude-type=devtmpfs
