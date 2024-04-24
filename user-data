@@ -209,7 +209,7 @@ runcmd:
  - apt-get install -y gitweb
  - a2disconf gitweb
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
- - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak20/home/git/|g" /etc/gitweb.conf
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak23/home/git/|g" /etc/gitweb.conf
  - systemctl restart apache2
  - echo
  - echo 'QEMU LAM Install glances after other packages'
