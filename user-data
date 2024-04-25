@@ -17,9 +17,13 @@ ssh_authorized_keys:
  - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAYEAnNqVrt71AKSIMmSAIONBx4jIEK0IIZF5fSAaB9kI4oOK+t7aSTKAZwwgKHWJ536XFdR3Ql5Xi0r2CuUEf1GVEagAxLZTXRuim5UGmS63rfSxGwq9JQVg5WDbN5ilnGxSmqsD77SApvmffcO/T2zZWd+rrjMWWRi9zQwRdQRm60bc69ajJbjIJd8SCXIggUPzTkUz5Sca7dhdffcMpGR9bdexFln+YSli1ohtvs2zVBM4ncpufGS+Auax8+gQNr32QeSszlKuKsXYorZ9gl+Z8s62mX5yCXIrH2hWoHsCTUX38iVM8/wI6sPVosarkng7mPOOQLy5k50Y0cb9FRQGlrvmQqsc3fI7tC1fblhKL0HaY844kIZRHwFuOI04ik+b8Swdjed6+FH/RIKppuOY+qfdmv8gcX4ZhpbKg+JN+u5Xy5awpUFqhsbBdCz0MvLNPKEbDNCFokX8nL0HqGeABk2DOJ1+IOFz5pIiCL31LTVGTQ0AwXp3nkaHZykJNrcB Authentication from lam@laptop.lam1.us
 
 runcmd:
+ - keyName="qemu-lam-fedora"
  - echo
  - echo 'QEMU LAM Alaska Allow any to read /var/log/cloud-init-output.log'
  - chmod a+r /var/log/cloud-init-output.log
+ - echo
+ - echo 'QEMU LAM - set SElinux to permissive mode'
+ - setenforce Permissive
  - echo
  - echo 'QEMU LAM Alaska Adding a swap partition'
  - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
@@ -55,6 +59,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '1s/localhost/fedora.lam1.us fedora localhost/' /etc/hosts
+ - echo '10.55.5.20 ak20.lam1.us ak20' >> /etc/hosts
  - echo
  - echo 'QEMU LAM Alaska Report user-data for this instance (CloudInit directives)'
  - echo
@@ -62,12 +67,16 @@ runcmd:
  - echo
  - echo 'QEMU LAM Alaska Adding nfs4 mount to ak20:/mnt/ak20-ext4 and ak20:/mnt/ak20-Bk'
  - mkdir /mnt/ak20-ext4 /mnt/ak20-Bk
- - echo "10.55.5.20:/mnt/ak20-ext4 /mnt/ak20-ext4 nfs4 defaults,nofail,x-systemd.device-timeout=4 0 0" >> /etc/fstab
- - echo "10.55.5.20:/mnt/ak20-Bk   /mnt/ak20-Bk   nfs4 defaults,nofail,x-systemd.device-timeout=4 0 0" >> /etc/fstab
+ - echo "ak20:/mnt/ak20-ext4 /mnt/ak20-ext4 nfs4 defaults,nofail,x-systemd.device-timeout=4 0 0" >> /etc/fstab
+ - echo "ak20:/mnt/ak20-Bk   /mnt/ak20-Bk   nfs4 defaults,nofail,x-systemd.device-timeout=4 0 0" >> /etc/fstab
  - mount -a -t nfs4
+ - df -Th --exclude-type=tmpfs --exclude-type=devtmpfs
  - echo
  - echo 'QEMU LAM Installing Amazon Linux 2 ec2-user bash resources for fedora user'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/Amazom-Linux-2023-ec2-user.tgz --directory /home/fedora
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/ec2-user.tgz --directory /home/fedora
+ - echo
+ - echo 'QEMU LAM Link to .aws resources for root'
+ - ln -s /home/fedora/.aws /root/.aws
  - echo
  - echo 'QEMU LAM Report kernel version'
  - uname -a
@@ -89,7 +98,7 @@ runcmd:
  - dnf -y install glances vim-enhanced
  - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
- - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/aws /var/www/aws
+ - git clone /mnt/ak20-Bk/Bk2/ak23/home/git/aws /var/www/aws
  - sh -c "cd /var/www/aws;git remote set-url origin git@github.com:LAMurakami/aws"
  - sh -c "cd /var/www/aws;git remote add ak20 git@ak20:aws"
  - echo
@@ -107,25 +116,23 @@ runcmd:
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/letsencrypt.tgz --directory /etc
  - echo
  - echo 'QEMU LAM Install no-ssl web site'
- - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/no-ssl.git /var/www/no-ssl
+ - git clone /mnt/ak20-Bk/Bk2/ak23/home/git/no-ssl.git /var/www/no-ssl
  - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
  - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
- - rm /etc/httpd/conf.d/welcome.conf
- - touch /etc/httpd/conf.d/welcome.conf
+ - sh -c "cd /var/www/no-ssl;git checkout -b $keyName"
+ - sed -i "s|var/log/apache2|var/log/httpd|" /var/www/no-ssl/no-ssl_apache2.conf
  - sed -i 's|aws.lam1.us|fedora.lam1.us|' /var/www/no-ssl/no-ssl_apache2.conf
  - ln -s /var/www/no-ssl/no-ssl_apache2.conf /etc/httpd/conf.d/000-no-ssl.conf
+ - rm /etc/httpd/conf.d/welcome.conf
+ - touch /etc/httpd/conf.d/welcome.conf
  - echo
  - echo 'QEMU LAM Install lam web site'
- # Extract lam from archive that includes MediWiki but not git repo
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/lam.tgz --directory /var/www
- # Clone the lam repo and integrate it with MediWiki included lam archive
- - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/lam.git /tmp/lam
- - mv /tmp/lam/.git /tmp/lam/.gitignore /var/www/lam
- - rm -rf /tmp/lam # Remove the lam repo fragment
- - sh -c "cd /var/www/lam;git remote set-url origin git@ak20:lam"
+ # Extract lam from archive that includes MediWiki
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/lam.tgz --directory /var/www
  # Use fedora branch to serve secure site at https://fedora.lam1.us
  - sh -c "cd /var/www/lam;git stash"
  - sh -c "cd /var/www/lam;git checkout fedora"
+ - sh -c "cd /var/www/lam;git checkout -b $keyName"
  - echo
  - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
  - sed -i "s|aws|fedora|" /var/www/no-ssl/apache2.conf
@@ -135,12 +142,9 @@ runcmd:
  - chmod 775 /var/www/Multicount
  - echo
  - echo 'QEMU LAM Install LAM perl modules'
- - mkdir -p /usr/local/share/perl5/5.36
- - ln -s /var/www/no-ssl/site_perl-LAM /usr/local/share/perl5/5.36/LAM
+ - mkdir -p /usr/local/share/perl5/5.38
+ - ln -s /var/www/no-ssl/site_perl-LAM /usr/local/share/perl5/5.38/LAM
  - echo
- - echo 'QEMU LAM allow Ubuntu apache2 log path or Amazon Linux 2 apache2 log path'
- - sh -c "cd /var/log;ln -s httpd apache2"
- - ln -s /var/log/apache2 /etc/httpd/logs
  - chmod a+rx /var/log/httpd
  - echo
  - echo 'QEMU LAM Update main apache2 configuration'
@@ -165,15 +169,11 @@ runcmd:
  - dnf -y install gitweb
  - sed -i '1 s|Alias /git /var/www/git|Alias /gitweb /var/www/git|' /etc/httpd/conf.d/gitweb.conf
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
- - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak20/home/git/|g" /etc/gitweb.conf
- - echo
- - echo 'QEMU LAM tell SELinux gitweb is part of httpd_sys_content_t'
- - chcon system_u:object_r:httpd_sys_content_t:s0 /var/www/git/gitweb.cgi
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak23/home/git/|g" /etc/gitweb.conf
  - echo
  - echo 'QEMU LAM Creating {lam|Mediawiki} database and user'
  - mysql --table < /var/www/lam/lam-user.sql
  - echo 'QEMU LAM Restore latest lam database backup from AWS S3'
- - ln -s /home/fedora/.aws /root/.aws
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
  - echo 'QEMU LAM Restore latest LAM Alaska MediaWiki database backup from AWS S3'
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
@@ -181,15 +181,27 @@ runcmd:
  - echo 'QEMU LAM ***** Additional sites *****'
  - echo
  - echo 'QEMU LAM Installing sites.lam1.us web site'
- - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/sites.git /var/www/sites
+ - git clone /mnt/ak20-Bk/Bk2/ak23/home/git/sites.git /var/www/sites
  - sh -c "cd /var/www/sites;git remote set-url origin git@ak20:sites"
+ - sh -c "cd /var/www/sites;git checkout -b $keyName"
+ - sed -i "s|var/log/apache2|var/log/httpd|" /var/www/sites/sites_apache2.conf
  - ln -s /var/www/sites/sites_apache2.conf /etc/httpd/conf.d/zzz_030_sites.conf
  - echo
  - echo 'QEMU LAM Installing arsc.lam1.us web site'
- - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/arsc /var/www/arsc
+ - git clone /mnt/ak20-Bk/Bk2/ak23/home/git/arsc /var/www/arsc
  - sh -c "cd /var/www/arsc;git remote set-url origin git@github.com:LAMurakami/arsc"
  - sh -c "cd /var/www/arsc;git remote add ak20 git@ak20:arsc"
+ - sh -c "cd /var/www/arsc;git checkout -b $keyName"
+ - sed -i "s|var/log/apache2|var/log/httpd|" /var/www/arsc/arsc_apache2.conf
  - ln -s /var/www/arsc/arsc_apache2.conf /etc/httpd/conf.d/zzz_060_arsc.conf
+ - echo
+ - echo 'QEMU LAM Alaska Installing gci.lam1.us web site'
+ - git clone /mnt/ak20-Bk/Bk2/ak23/home/git/gci /var/www/gci
+ - sh -c "cd /var/www/gci;git remote set-url origin git@github.com:LAMurakami/gci"
+ - sh -c "cd /var/www/gci;git remote add ak20 git@ak20:gci"
+ - sh -c "cd /var/www/gci;git checkout -b $keyName"
+ - sed -i "s|var/log/apache2|var/log/httpd|" /var/www/gci/gci_apache2.conf
+ - ln -s /var/www/gci/gci_apache2.conf /etc/httpd/conf.d/000-gci.conf
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
  - echo
@@ -201,9 +213,6 @@ runcmd:
  - echo
  - echo 'QEMU LAM Change ownership of /var/www'
  - chown -R fedora:apache /var/www
- - echo
- - echo 'QEMU LAM tell SELinux to be permissive with httpd'
- - semanage permissive -a httpd_t
  - echo
  - echo 'QEMU LAM systemctl start httpd'
  - systemctl start httpd
