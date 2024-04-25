@@ -53,6 +53,7 @@ packages:
  - python3-glances
 
 runcmd:
+ - keyName="qemu-lam-opensuse"
  - echo
  - echo 'QEMU LAM Alaska Allow any to read /var/log/cloud-init-output.log'
  - chmod a+r /var/log/cloud-init-output.log
@@ -90,6 +91,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '12s/localhost/opensuse.lam1.us opensuse localhost/' /etc/hosts
+ - echo '10.55.5.20 ak20.lam1.us ak20' >> /etc/hosts
  - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
  - git clone https://github.com/LAMurakami/aws /var/www/aws
@@ -126,9 +128,10 @@ runcmd:
  - echo
  - echo 'QEMU LAM Alaska Adding nfs4 mount to ak20:/mnt/ak20-ext4 and ak20:/mnt/ak20-Bk'
  - mkdir /mnt/ak20-ext4 /mnt/ak20-Bk
- - echo "10.55.5.20:/mnt/ak20-ext4  /mnt/ak20-ext4  nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
- - echo "10.55.5.20:/mnt/ak20-Bk    /mnt/ak20-Bk    nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
+ - echo "ak20:/mnt/ak20-ext4  /mnt/ak20-ext4  nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
+ - echo "ak20:/mnt/ak20-Bk    /mnt/ak20-Bk    nfs4   defaults,nofail,x-systemd.device-timeout=4    0     0" >> /etc/fstab
  - mount -a -t nfs4
+ - df -Th --exclude-type=tmpfs --exclude-type=devtmpfs
  - echo
  - echo 'QEMU LAM Alaska Listen for ssh connections on alternate port 55520 and add ssh Banner'
  - cp /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/sshd_config /etc/ssh
@@ -153,6 +156,9 @@ runcmd:
  - echo 'QEMU LAM Alaska Installing ubuntu user bash resources'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/opensuse
  - echo
+ - echo 'QEMU LAM Link to .aws resources for root'
+ - ln -s /home/opensuse/.aws /root/.aws
+ - echo
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
  - echo 'QEMU LAM Alaska Second Cloud-init etckeeper commit'
@@ -162,7 +168,7 @@ runcmd:
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/letsencrypt.tgz --directory /etc
  - echo
  - echo 'QEMU LAM Alaska Let-s Encrypt certificates etckeeper commit'
- - etckeeper commit -m 'QEMU LAM Alaska Second Cloud-init etckeeper commit'
+ - etckeeper commit -m 'QEMU LAM Alaska Second Let-s Encrypt certificates etckeeper commit'
  - echo
  - echo 'QEMU LAM Updating apache2 configuration for lam1'
  - a2enmod info
@@ -174,16 +180,12 @@ runcmd:
  - echo 'QEMU LAM Tell git installing in /var/www/lam is O.K.'
  - git config --system --add safe.directory /var/www/lam
  - echo
- # Extract lam from archive that includes MediWiki but not git repo
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/lam.tgz --directory /var/www
- # Clone the lam repo and integrate it with MediWiki included lam archive
- - git clone /mnt/ak20-Bk/Bk2/ak20/home/git/lam.git /tmp/lam
- - mv /tmp/lam/.git /tmp/lam/.gitignore /var/www/lam
- - rm -rf /tmp/lam # Remove the lam repo fragment
- - sh -c "cd /var/www/lam;git remote set-url origin git@ak20:lam"
+ # Extract lam from archive that includes MediWiki
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/lam.tgz --directory /var/www
  # Use opensuse branch to serve secure site at https://opensuse.lam1.us
  - sh -c "cd /var/www/lam;git stash"
  - sh -c "cd /var/www/lam;git checkout opensuse"
+ - sh -c "cd /var/www/lam;git checkout -b $keyName"
  - echo
  - echo 'QEMU LAM Configure /server-info and /server-status'
  - rm /etc/apache2/mod_info.conf
@@ -209,13 +211,12 @@ runcmd:
  - zypper --non-interactive install git-web
  - sed -i '1 s|Alias /git "/usr/share/gitweb/"|Alias /gitweb "/usr/share/gitweb/"|' /etc/apache2/conf.d/gitweb.conf
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
- - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak20/home/git/|g" /etc/gitweb.conf
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak23/home/git/|g" /etc/gitweb.conf
  - echo
- - echo 'QEMU LAM Alaska Set opensuse as owner of /var/www'
- - chown -R opensuse:www /var/www
+ - echo 'QEMU LAM Alaska Set lam as owner of /var/www'
+ - chown -R lam:www /var/www
  - echo
  - echo 'QEMU LAM Refreshing lam database'
- - ln -s /home/opensuse/.aws /root/.aws
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
  - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
  - echo
