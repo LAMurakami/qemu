@@ -104,12 +104,19 @@ runcmd:
  - echo 'QEMU LAM Alaska Check US Alaska local time for this system'
  - ls -lF --time-style=long-iso /etc/localtime
  - echo
+ - echo 'QEMU LAM Alaska Installing gci.lam1.us web site'
+ - git clone https://github.com/LAMurakami/gci /var/www/gci
+ - sh -c "cd /var/www/gci;git remote set-url origin git@github.com:LAMurakami/gci"
+ - sh -c "cd /var/www/gci;git remote add ak20 git@ak20:gci"
+ - sh -c "cd /var/www/gci;git checkout -b $keyName"
+ - rm /etc/apache2/default-server.conf
+ - cp /var/www/gci/opensuse/etc/apache2/default-server.conf /etc/apache2/default-server.conf
+ - echo
  - echo 'QEMU LAM Installing no-ssl Apache configuration'
  - git clone https://github.com/LAMurakami/no-ssl /var/www/no-ssl
  - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
  - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
- - rm /etc/apache2/default-server.conf
- - cp /var/www/no-ssl/opensuse/etc/apache2/default-server.conf /etc/apache2/default-server.conf
+ - ln -s /var/www/no-ssl/no-ssl_apache2.conf /etc/apache2/vhosts.d/opensuse.conf
  - a2enmod mod_perl
  - a2enmod rewrite
  - echo
