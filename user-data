@@ -88,6 +88,9 @@ runcmd:
  - echo 'QEMU LAM Set vim as default editor for system'
  - update-alternatives --set editor /usr/bin/vim.basic
  - echo
+ - echo 'QEMU LAM Create logs/ sybmolic link for Apache2 configuration use'
+ - ln -s /var/log/apache2 /etc/apache2/logs
+ - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
  - git clone https://github.com/LAMurakami/aws /var/www/aws
  - sh -c "cd /var/www/aws;git remote set-url origin git@github.com:LAMurakami/aws"
