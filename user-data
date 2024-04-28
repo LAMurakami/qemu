@@ -83,8 +83,11 @@ runcmd:
  - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
  - echo '10.55.5.20 ak20.lam1.us ak20' >> /etc/hosts
  - echo
- - echo 'AWS LAM Set vim as default editor for system'
+ - echo 'QEMU LAM Set vim as default editor for system'
  - update-alternatives --set editor /usr/bin/vim.basic
+ - echo
+ - echo 'QEMU LAM Create logs/ sybmolic link for Apache2 configuration use'
+ - ln -s /var/log/apache2 /etc/apache2/logs
  - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
  - git clone https://github.com/LAMurakami/aws /var/www/aws
