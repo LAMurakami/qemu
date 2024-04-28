@@ -120,7 +120,6 @@ runcmd:
  - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
  - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
  - sh -c "cd /var/www/no-ssl;git checkout -b $keyName"
- - sed -i "s|var/log/apache2|var/log/httpd|" /var/www/no-ssl/no-ssl_apache2.conf
  - sed -i 's|aws.lam1.us|fedora.lam1.us|' /var/www/no-ssl/no-ssl_apache2.conf
  - ln -s /var/www/no-ssl/no-ssl_apache2.conf /etc/httpd/conf.d/000-no-ssl.conf
  - rm /etc/httpd/conf.d/welcome.conf
@@ -184,7 +183,6 @@ runcmd:
  - git clone /mnt/ak20-Bk/Bk2/ak23/home/git/sites.git /var/www/sites
  - sh -c "cd /var/www/sites;git remote set-url origin git@ak20:sites"
  - sh -c "cd /var/www/sites;git checkout -b $keyName"
- - sed -i "s|var/log/apache2|var/log/httpd|" /var/www/sites/sites_apache2.conf
  - ln -s /var/www/sites/sites_apache2.conf /etc/httpd/conf.d/zzz_030_sites.conf
  - echo
  - echo 'QEMU LAM Installing arsc.lam1.us web site'
@@ -192,7 +190,6 @@ runcmd:
  - sh -c "cd /var/www/arsc;git remote set-url origin git@github.com:LAMurakami/arsc"
  - sh -c "cd /var/www/arsc;git remote add ak20 git@ak20:arsc"
  - sh -c "cd /var/www/arsc;git checkout -b $keyName"
- - sed -i "s|var/log/apache2|var/log/httpd|" /var/www/arsc/arsc_apache2.conf
  - ln -s /var/www/arsc/arsc_apache2.conf /etc/httpd/conf.d/zzz_060_arsc.conf
  - echo
  - echo 'QEMU LAM Alaska Installing gci.lam1.us web site'
@@ -200,7 +197,6 @@ runcmd:
  - sh -c "cd /var/www/gci;git remote set-url origin git@github.com:LAMurakami/gci"
  - sh -c "cd /var/www/gci;git remote add ak20 git@ak20:gci"
  - sh -c "cd /var/www/gci;git checkout -b $keyName"
- - sed -i "s|var/log/apache2|var/log/httpd|" /var/www/gci/gci_apache2.conf
  - ln -s /var/www/gci/gci_apache2.conf /etc/httpd/conf.d/000-gci.conf
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
@@ -212,7 +208,8 @@ runcmd:
  - [ sh, -c, 'echo "<?php phpinfo(); ?>" > /var/www/lam/html/phpinfo.php' ]
  - echo
  - echo 'QEMU LAM Change ownership of /var/www'
- - chown -R fedora:apache /var/www
+ - chown -R lam:apache /var/www
+ - chown -R apache:apache /var/www/Multicount
  - echo
  - echo 'QEMU LAM systemctl start httpd'
  - systemctl start httpd
