@@ -93,6 +93,9 @@ runcmd:
  - sed -i '12s/localhost/opensuse.lam1.us opensuse localhost/' /etc/hosts
  - echo '10.55.5.20 ak20.lam1.us ak20' >> /etc/hosts
  - echo
+ - echo 'QEMU LAM Create logs/ sybmolic link for Apache2 configuration use'
+ - ln -s /var/log/apache2 /srv/www/logs
+ - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
  - git clone https://github.com/LAMurakami/aws /var/www/aws
  - sh -c "cd /var/www/aws;git remote set-url origin git@github.com:LAMurakami/aws"
