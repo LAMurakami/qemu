@@ -68,6 +68,7 @@ runcmd:
  - git config --system core.editor vi
  - git config --system branch.autosetuprebase always
  - git config --system init.defaultBranch master
+ - git config --system core.pager "less --quit-if-one-screen --no-init"
  - echo
  - echo 'QEMU LAM link which to /usr/local/bin *****'
  - ln -s /usr/bin/which /usr/local/bin/which
