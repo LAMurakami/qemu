@@ -10,7 +10,7 @@ output: {all: '| tee -a /var/log/cloud-init-output.log'}
 hostname: ubuntu
 
 # Set timezone
-timezone: US/Alaska
+timezone: Etc/GMT+8
 
 # Upgrade apt database on first boot
 package_update: true
@@ -25,7 +25,6 @@ ssh_authorized_keys:
 packages:
  - rcs
  - nfs-common
- - awscli
  - mailutils
  - swish++
  - libio-captureoutput-perl
@@ -35,7 +34,7 @@ packages:
  - php
  - php-gd
  - texlive
- - php8.1-xml
+ - php8.3-xml
  - lynx
  - apache2-doc
  - libapache2-mod-perl2
@@ -151,7 +150,7 @@ runcmd:
  - echo 'QEMU LAM Alaska Listen for ssh connections on alternate port 55520 and add ssh Banner'
  - cp /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/sshd_config /etc/ssh
  - ln -s /var/www/aws/etc/ssh/Banner.txt /etc/ssh
- - systemctl restart sshd
+ - systemctl restart ssh
  - echo
  - echo 'QEMU LAM Alaska Installing ubuntu user bash resources'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/ubuntu
@@ -201,8 +200,8 @@ runcmd:
  - chown -R ubuntu:ubuntu /home/ubuntu
  - echo
  - echo 'QEMU LAM Refreshing lam database'
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
+ - cat /mnt/ak20-Bk/Bk2/ak20/Bk-20-MySQL.lam.sql.gz | gunzip -c | mysql --user=lam lam
+ - cat /mnt/ak20-Bk/Bk2/ak20/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
  - echo
  - echo 'QEMU LAM Install man2html after apache has been configured'
  - apt-get install -y man2html
