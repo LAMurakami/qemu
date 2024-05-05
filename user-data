@@ -12,36 +12,9 @@ hostname: ubuntu
 # Set timezone
 timezone: Etc/GMT+8
 
-# Upgrade apt database on first boot
-package_update: true
-
-# Upgrade the instance on first boot
-package_upgrade: true
-
 ssh_import_is: [ubuntu]
 ssh_authorized_keys:
  - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAYEAnNqVrt71AKSIMmSAIONBx4jIEK0IIZF5fSAaB9kI4oOK+t7aSTKAZwwgKHWJ536XFdR3Ql5Xi0r2CuUEf1GVEagAxLZTXRuim5UGmS63rfSxGwq9JQVg5WDbN5ilnGxSmqsD77SApvmffcO/T2zZWd+rrjMWWRi9zQwRdQRm60bc69ajJbjIJd8SCXIggUPzTkUz5Sca7dhdffcMpGR9bdexFln+YSli1ohtvs2zVBM4ncpufGS+Auax8+gQNr32QeSszlKuKsXYorZ9gl+Z8s62mX5yCXIrH2hWoHsCTUX38iVM8/wI6sPVosarkng7mPOOQLy5k50Y0cb9FRQGlrvmQqsc3fI7tC1fblhKL0HaY844kIZRHwFuOI04ik+b8Swdjed6+FH/RIKppuOY+qfdmv8gcX4ZhpbKg+JN+u5Xy5awpUFqhsbBdCz0MvLNPKEbDNCFokX8nL0HqGeABk2DOJ1+IOFz5pIiCL31LTVGTQ0AwXp3nkaHZykJNrcB Authentication from lam@laptop.lam1.us
-
-packages:
- - rcs
- - nfs-common
- - mailutils
- - swish++
- - libio-captureoutput-perl
- - libcgi-pm-perl
- - libdbi-perl
- - libdbd-mysql-perl
- - texlive
- - lynx
- - apache2-doc
- - libapache2-mod-perl2
- - libbsd-resource-perl
- - libapache2-reload-perl
- - apache2-suexec-custom
- - x11-apps
- - whois
- - libgtk2.0-0
- - plocate
 
 runcmd:
  - echo
@@ -59,19 +32,29 @@ runcmd:
  - git config --system branch.autosetuprebase always
  - git config --system init.defaultBranch master
  - echo
- - echo 'QEMU LAM Alaska Install etckeeper to track configuration changes'
- - apt-get install etckeeper
- - echo
  - echo 'QEMU LAM Alaska Adding a swap partition'
  - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
  - swapon --all
  - free
  - swapon -s
  - echo
+ - echo 'QEMU LAM Update package repository and Upgrade packages'
+ - apt update
+ - apt upgrade --yes
+ - echo
+ - echo 'QEMU LAM Alaska Install etckeeper to track configuration changes'
+ - apt-get install etckeeper
+ - echo
+ - echo 'QEMU LAM Install nfs-common'
+ - apt-get install --yes nfs-common
+ - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
  - echo '10.55.5.20 ak20.lam1.us ak20' >> /etc/hosts
  - echo
+ - echo 'QEMU LAM Install some packages for LAM Alaska'
+ - export DEBIAN_FRONTEND=noninteractive
+ - apt-get install --yes rcs mailutils swish++ libio-captureoutput-perl libcgi-pm-perl libdbi-perl libdbd-mysql-perl texlive lynx apache2-doc libapache2-mod-perl2 libbsd-resource-perl libapache2-reload-perl apache2-suexec-custom x11-apps whois libgtk2.0-0 plocate
  - echo
  - echo 'QEMU LAM Install php including apache2 mod'
  - apt-get install --yes php php-gd php8.3-xml php-mysql libapache2-mod-php php-mbstring php-intl php-apcu

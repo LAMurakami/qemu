@@ -10,12 +10,18 @@ files although the vendor-data file is always empty as in the tutorial.
 These files are served up by the ad hoc IMDS webserver using Python built-in
 webserver.  The IMDS webserver URL is specified in the launch command.
 
-### The user-data file launches a LAM Alaska clone based on an Ubuntu 22.04 image
+### The user-data file launches a LAM Alaska clone based on an Ubuntu 24.04 image
+
+I was cloned from the master branch for Ubuntu 22.04 on May 2 2024
+and probably will be merged back into the master branch after
+Ubuntu 24.04 appears in the AWS Quick Launch page as an OS choice
+and I have switched the main aws instance to Ubuntu 24.04 Noble Numbat.
 
 The user-data files are patterned after the cloud-init files in the
 [aws repo](https://github.com/LAMurakami/aws#readme)
 that launch a LAM Alaska clone on an AWS instance.  There are cloud-init files
 to launch a LAM Alaska clone on an AWS instance on either x86 or ARM with
+Debian 12,
 Ubuntu Server 22.04, Amazon Linux 2023 or Amazon Linux 2 as the OS.
 
 I use QEMU with the KVM Hypervisor.Framework to allow the guest to run
