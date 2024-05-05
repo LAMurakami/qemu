@@ -31,27 +31,17 @@ packages:
  - libcgi-pm-perl
  - libdbi-perl
  - libdbd-mysql-perl
- - php
- - php-gd
  - texlive
- - php8.3-xml
  - lynx
  - apache2-doc
  - libapache2-mod-perl2
  - libbsd-resource-perl
  - libapache2-reload-perl
  - apache2-suexec-custom
- - mariadb-client
- - mariadb-server
- - php-mysql
- - libapache2-mod-php
  - x11-apps
  - whois
  - libgtk2.0-0
  - plocate
- - php-mbstring
- - php-intl
- - php-apcu
 
 runcmd:
  - echo
@@ -82,6 +72,9 @@ runcmd:
  - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
  - echo '10.55.5.20 ak20.lam1.us ak20' >> /etc/hosts
  - echo
+ - echo
+ - echo 'QEMU LAM Install php including apache2 mod'
+ - apt-get install --yes php php-gd php8.3-xml php-mysql libapache2-mod-php php-mbstring php-intl php-apcu
  - echo 'QEMU LAM Set vim as default editor for system'
  - update-alternatives --set editor /usr/bin/vim.basic
  - echo
@@ -188,6 +181,9 @@ runcmd:
  - mkdir /var/www/Multicount
  - chown lam:www-data /var/www/Multicount
  - chmod 775 /var/www/Multicount
+ - echo
+ - echo 'QEMU LAM Install mariadb client ans server'
+ - apt-get install --yes mariadb-client mariadb-server
  - echo
  - echo 'QEMU LAM Creating {lam|Mediawiki} database and user'
  - mysql --table < /var/www/lam/lam-user.sql
