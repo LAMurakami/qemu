@@ -203,8 +203,8 @@ runcmd:
  - chown -R debian:debian /home/debian
  - echo
  - echo 'QEMU LAM Refreshing lam database'
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
+ - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | tail -n +2 | mariadb --user=lam lam
+ - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | tail -n +2 | mariadb --user=lam wikidb
  - echo
  - echo 'QEMU LAM Install man2html after apache has been configured'
  - apt-get install -y man2html
