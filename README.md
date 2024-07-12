@@ -59,3 +59,39 @@ are on the ak19 SSD drive for better performance.
 
 I use QEMU with a bridge configuraton that allows the instance to
 get it's own IP address on the LAN.
+
+### The fedora-packages branch uses packages:
+
+The fedora-packages branch was created from the fedora branch to reintroduce
+packages: package_update: and package_upgrade: cloud-config YAML sections
+to test
+[Bug 1907030](https://bugzilla.redhat.com/show_bug.cgi?id=1907030)
+- "dnf update" runs out of memory on swapless machines with 1G or less of RAM
+recent requests for information.
+
+I found Bug 1907030 when investigating Amazon Linux 2023 changes from
+Amazon Linux 2 and the change to dnf from yum for package management.
+The bug was years old when I found it over a year ago.
+I tested Fedora 38 QEMU instances to reporduce the bug and found that
+I needed a minimum of 896 M specified for virtual memory for a x86_64 qemu
+instance running with machine kvm acceleration to successfully use the
+package management cloud-config YAML sections instead of the workaround
+of doing this in the runcmd: section after configuring swap.
+
+The 3/27/2024 request asked if Fedora 40 Beta resolves the issue.
+I tested against the
+Fedora Cloud 40 RELEASE DATE: Tuesday, April 23, 2024
+Fedora-Cloud-Base-Generic.x86_64-40-1.14.qcow2 image from
+[Download Fedora Cloud](https://fedoraproject.org/cloud/download)
+
+With Fedora Cloud 40 Starting at 500M I see
+"Under memory pressure, flushing caches." messages but can still succeed
+the cloud-config Initialization with 491M of virtual memory with the
+packages: package_update: and package_upgrade: cloud-config YAML sections
+and not using the runcmd workaround.
+
+At 490M of virtual memory I get cloud-final.service: Failed with result 'oom-kill'.
+
+fedora kernel: Out of memory: Killed process 9134 (dnf) total-vm:526020kB,
+anon-rss:200kB, file-rss:144kB, shmem-rss:0kB, UID:0 pgtables:672kB
+oom_score_adj:0
