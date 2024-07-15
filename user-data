@@ -102,7 +102,7 @@ runcmd:
  - ln -s /var/www/gci/gci_apache2.conf /etc/apache2/sites-available/000-gci.conf
  - a2ensite 000-gci
  - echo
- - echo 'AWS LAM Install aws-cli snap'
+ - echo 'QEMU LAM Install aws-cli snap'
  - snap install aws-cli --classic
  - echo
  - echo 'QEMU LAM ***** Use private LAM Alaska resources *****'
