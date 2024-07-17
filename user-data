@@ -72,6 +72,12 @@ runcmd:
  - echo 'QEMU LAM link which to /usr/local/bin *****'
  - ln -s /usr/bin/which /usr/local/bin/which
  - echo
+ - echo 'QEMU LAM Alaska Adding a swap partition'
+ - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
+ - swapon --all
+ - free
+ - swapon -s
+ - echo
  - echo 'QEMU LAM Alaska Install etckeeper to track configuration changes'
  - zypper --non-interactive install etckeeper
  - echo
@@ -82,12 +88,6 @@ runcmd:
  - echo 'QEMU LAM enable and start MariaDB'
  - systemctl enable mariadb
  - systemctl start mariadb
- - echo
- - echo 'QEMU LAM Alaska Adding a swap partition'
- - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
- - swapon --all
- - free
- - swapon -s
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '12s/localhost/opensuse.lam1.us opensuse localhost/' /etc/hosts
