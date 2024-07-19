@@ -22,7 +22,6 @@ packages:
  - aws-cli
  - php8
  - php8-gd
- - texlive
  - lynx
  - apache2-doc
  - apache2-mod_perl
@@ -80,6 +79,9 @@ runcmd:
  - echo
  - echo 'QEMU LAM Alaska Install etckeeper to track configuration changes'
  - zypper --non-interactive install etckeeper
+ - echo
+ - echo 'QEMU LAM Alaska Install texlive after swap is enabled'
+ - zypper --non-interactive install texlive
  - echo
  - echo 'QEMU LAM Initialize etckeeper'
  - etckeeper init
