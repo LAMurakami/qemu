@@ -46,7 +46,6 @@ packages:
  - gtk3
  - perl-DBD-MySQL
  - mlocate
- - texlive
  - libxkbfile
  - xorg-x11-xbitmaps
  - git
@@ -69,6 +68,9 @@ runcmd:
  - free
  - echo 'QEMU LAM swap space in use'
  - swapon -s
+ - echo
+ - echo 'QEMU LAM Alaska Install texlive after swap is enabled'
+ - dnf -y install texlive
  - echo
  - echo 'QEMU LAM Set git user name, email for system'
  - git config --system user.name "LAMurakami"
