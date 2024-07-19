@@ -148,6 +148,10 @@ runcmd:
  - ln -s /var/www/aws/etc/ssh/Banner.txt /etc/ssh
  - systemctl restart sshd
  - echo
+ - echo 'QEMU LAM configure aws-lam IPv4 access including IPv6 tunnels'
+ - cp /var/www/aws/etc/ssh/ssh_config.d/aws-lam.conf /etc/ssh/ssh_config.d
+ - cp /var/www/aws/etc/profile.d/ssh_tunnel.sh /etc/profile.d
+ - echo
  - echo 'QEMU LAM Alaska Installing GNU tnef 1.4.18 compiled for Ubuntu Server 22.04'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/tnef-Ubuntu-22-04.tgz --directory /usr/local
  - file /usr/local/bin/tnef
