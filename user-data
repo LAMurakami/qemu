@@ -23,7 +23,7 @@ packages:
  - php8
  - php8-gd
  - lynx
- - apache2-doc
+ - apache2-manual
  - apache2-mod_perl
  - mariadb-client
  - mariadb
@@ -48,7 +48,6 @@ packages:
  - libXmu6
  - libxkbfile1
  - libXaw7
- - python3-glances
 
 runcmd:
  - keyName="qemu-lam-opensuse"
