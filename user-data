@@ -54,7 +54,7 @@ packages:
  - leafpad
 
 runcmd:
- - keyName="qemu-lam-fedora"
+ - keyName="qemu-lam-fedora-packages"
  - echo
  - echo 'QEMU LAM Alaska Allow any to read /var/log/cloud-init-output.log'
  - chmod a+r /var/log/cloud-init-output.log
@@ -143,8 +143,12 @@ runcmd:
  - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
  - git clone git@localhost:aws /var/www/aws
- - sh -c "cd /var/www/aws;git remote set-url origin git@github.com:LAMurakami/aws"
- - sh -c "cd /var/www/aws;git remote add ak20 git@ak20:aws"
+ - sh -c "cd /var/www/aws;git remote set-url origin git@aws:aws"
+ - sh -c "cd /var/www/aws;git remote rename origin aws"
+ - sh -c "cd /var/www/aws;git remote add github git@github.com:LAMurakami/aws"
+ - sh -c "cd /var/www/aws;git remote add gitlab git@gitlab.com:aws-lam/aws"
+ - sh -c "cd /var/www/aws;git checkout -b $keyName"
+ - sh -c "cd /var/www/aws;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - echo
  - echo 'QEMU LAM Cloud Guest motd'
  - ln -s /var/www/aws/etc/update-motd.d/51-cloudguest /etc/update-motd.d
@@ -165,9 +169,12 @@ runcmd:
  - echo
  - echo 'QEMU LAM Install no-ssl web site'
  - git clone git@localhost:no-ssl.git /var/www/no-ssl
- - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
- - sh -c "cd /var/www/no-ssl;git remote add ak20 git@ak20:no-ssl"
+ - sh -c "cd /var/www/no-ssl;git remote set-url origin git@aws:no-ssl"
+ - sh -c "cd /var/www/no-ssl;git remote rename origin aws"
+ - sh -c "cd /var/www/no-ssl;git remote add github git@github.com:LAMurakami/no-ssl"
+ - sh -c "cd /var/www/no-ssl;git remote add gitlab git@gitlab.com:aws-lam/no-ssl"
  - sh -c "cd /var/www/no-ssl;git checkout -b $keyName"
+ - sh -c "cd /var/www/no-ssl;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - sed -i 's|aws.lam1.us|fedora.lam1.us|' /var/www/no-ssl/no-ssl_apache2.conf
  - ln -s /var/www/no-ssl/no-ssl_apache2.conf /etc/httpd/conf.d/000-no-ssl.conf
  - rm /etc/httpd/conf.d/welcome.conf
@@ -180,6 +187,7 @@ runcmd:
  - sh -c "cd /var/www/lam;git stash"
  - sh -c "cd /var/www/lam;git checkout fedora"
  - sh -c "cd /var/www/lam;git checkout -b $keyName"
+ - sh -c "cd /var/www/lam;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - echo
  - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
  - sed -i "s|aws|fedora|" /var/www/no-ssl/apache2.conf
@@ -229,22 +237,32 @@ runcmd:
  - echo
  - echo 'QEMU LAM Installing sites.lam1.us web site'
  - git clone git@localhost:sites.git /var/www/sites
- - sh -c "cd /var/www/sites;git remote set-url origin git@ak20:sites"
+ - sh -c "cd /var/www/sites;git remote set-url origin git@aws:sites"
+ - sh -c "cd /var/www/sites;git remote rename origin aws"
+ - sh -c "cd /var/www/sites;git remote add github git@github.com:LAMurakami/sites"
+ - sh -c "cd /var/www/sites;git remote add gitlab git@gitlab.com:aws-lam/sites"
  - sh -c "cd /var/www/sites;git checkout -b $keyName"
+ - sh -c "cd /var/www/sites;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - ln -s /var/www/sites/sites_apache2.conf /etc/httpd/conf.d/zzz_030_sites.conf
  - echo
  - echo 'QEMU LAM Installing arsc.lam1.us web site'
  - git clone git@localhost:arsc /var/www/arsc
- - sh -c "cd /var/www/arsc;git remote set-url origin git@github.com:LAMurakami/arsc"
- - sh -c "cd /var/www/arsc;git remote add ak20 git@ak20:arsc"
+ - sh -c "cd /var/www/arsc;git remote set-url origin git@aws:arsc"
+ - sh -c "cd /var/www/arsc;git remote rename origin aws"
+ - sh -c "cd /var/www/arsc;git remote add github git@github.com:LAMurakami/arsc"
+ - sh -c "cd /var/www/arsc;git remote add gitlab git@gitlab.com:aws-lam/arsc"
  - sh -c "cd /var/www/arsc;git checkout -b $keyName"
+ - sh -c "cd /var/www/arsc;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - ln -s /var/www/arsc/arsc_apache2.conf /etc/httpd/conf.d/zzz_060_arsc.conf
  - echo
  - echo 'QEMU LAM Alaska Installing gci.lam1.us web site'
  - git clone git@localhost:gci /var/www/gci
- - sh -c "cd /var/www/gci;git remote set-url origin git@github.com:LAMurakami/gci"
- - sh -c "cd /var/www/gci;git remote add ak20 git@ak20:gci"
+ - sh -c "cd /var/www/gci;git remote set-url origin git@aws:gci"
+ - sh -c "cd /var/www/gci;git remote rename origin aws"
+ - sh -c "cd /var/www/gci;git remote add github git@github.com:LAMurakami/gci"
+ - sh -c "cd /var/www/gci;git remote add gitlab git@gitlab.com:aws-lam/gci"
  - sh -c "cd /var/www/gci;git checkout -b $keyName"
+ - sh -c "cd /var/www/gci;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - ln -s /var/www/gci/gci_apache2.conf /etc/httpd/conf.d/000-gci.conf
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
@@ -254,6 +272,10 @@ runcmd:
  - echo
  - echo 'QEMU LAM Create /phpinfo.php page'
  - [ sh, -c, 'echo "<?php phpinfo(); ?>" > /var/www/lam/html/phpinfo.php' ]
+ - sh -c "cd /var/www/lam;git add html/phpinfo.php"
+ - echo
+ - echo 'QEMU LAM commit git changes from initialization'
+ - /var/www/aws/AWS-LAM-git-commit.bash $keyName lam no-ssl
  - echo
  - echo 'QEMU LAM systemctl start httpd'
  - systemctl start httpd
