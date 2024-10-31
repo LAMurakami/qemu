@@ -38,7 +38,7 @@ runcmd:
  - dnf -y upgrade
  - echo
  - echo 'QEMU LAM Install LAMipedia packages'
- - dnf -y install nfs-utils httpd httpd-manual mod_ssl whois lynx perl-CGI perl-libwww-perl xauth php-fpm php-mysqli php-json php php-devel php-gd php-mbstring php-intl php-mysqlnd php-xml mariadb-server mod_perl gtk3 perl-DBD-MySQL mlocate texlive libxkbfile xorg-x11-xbitmaps git bind awscli2 leafpad
+ - dnf -y install nfs-utils httpd httpd-manual mod_ssl whois lynx perl-CGI perl-libwww-perl xauth php-fpm php-mysqli php-json php php-devel php-gd php-mbstring php-intl php-mysqlnd php-xml mariadb-server mod_perl gtk3 perl-DBD-MySQL plocate texlive libxkbfile xorg-x11-xbitmaps git bind awscli2 leafpad
  - echo
  - echo 'QEMU LAM Set git user name, email for system'
  - git config --system user.name "LAMurakami"
@@ -250,7 +250,7 @@ runcmd:
  - echo 'QEMU LAM List Installed Packages information'
  - dnf repoquery -a --installed
  - echo
- - echo 'QEMU LAM ***** Update mlocate database *****'
+ - echo 'QEMU LAM ***** Update plocate database *****'
  - updatedb
  - echo
  - echo 'QEMU LAM Create lam murakami staff credentials.'
