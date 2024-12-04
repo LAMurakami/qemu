@@ -10,7 +10,7 @@ output: {all: '| tee -a /var/log/cloud-init-output.log'}
 hostname: ubuntu
 
 # Set timezone
-timezone: Etc/GMT+8
+timezone: America/Anchorage
 
 ssh_authorized_keys:
  - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAYEAnNqVrt71AKSIMmSAIONBx4jIEK0IIZF5fSAaB9kI4oOK+t7aSTKAZwwgKHWJ536XFdR3Ql5Xi0r2CuUEf1GVEagAxLZTXRuim5UGmS63rfSxGwq9JQVg5WDbN5ilnGxSmqsD77SApvmffcO/T2zZWd+rrjMWWRi9zQwRdQRm60bc69ajJbjIJd8SCXIggUPzTkUz5Sca7dhdffcMpGR9bdexFln+YSli1ohtvs2zVBM4ncpufGS+Auax8+gQNr32QeSszlKuKsXYorZ9gl+Z8s62mX5yCXIrH2hWoHsCTUX38iVM8/wI6sPVosarkng7mPOOQLy5k50Y0cb9FRQGlrvmQqsc3fI7tC1fblhKL0HaY844kIZRHwFuOI04ik+b8Swdjed6+FH/RIKppuOY+qfdmv8gcX4ZhpbKg+JN+u5Xy5awpUFqhsbBdCz0MvLNPKEbDNCFokX8nL0HqGeABk2DOJ1+IOFz5pIiCL31LTVGTQ0AwXp3nkaHZykJNrcB Authentication from lam@laptop.lam1.us
@@ -87,12 +87,37 @@ runcmd:
  - sh -c "cd /var/www/no-ssl;git remote add gitlab git@gitlab.com:aws-lam/no-ssl"
  - sh -c "cd /var/www/no-ssl;git checkout -b $keyName"
  - sh -c "cd /var/www/no-ssl;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - echo
+ - echo 'QEMU LAM Alaska Installing z.lam1.us web site'
+ - git clone https://github.com/LAMurakami/z /var/www/z
+ - sh -c "cd /var/www/z;git remote set-url origin git@github.com:LAMurakami/z"
+ - sh -c "cd /var/www/z;git remote rename origin github"
+ - sh -c "cd /var/www/z;git remote add aws git@aws:z"
+ - sh -c "cd /var/www/z;git remote add gitlab git@gitlab.com:aws-lam/z"
+ - sh -c "cd /var/www/z;git checkout -b $keyName"
+ - sh -c "cd /var/www/z;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - echo
+ - echo 'QEMU LAM Alaska Installing sites.lam1.us web site'
+ - git clone https://github.com/LAMurakami/sites /var/www/sites
+ - sh -c "cd /var/www/sites;git remote set-url origin git@github.com:LAMurakami/sites"
+ - sh -c "cd /var/www/sites;git remote rename origin github"
+ - sh -c "cd /var/www/sites;git remote add aws git@aws:sites"
+ - sh -c "cd /var/www/sites;git remote add gitlab git@gitlab.com:aws-lam/sites"
+ - sh -c "cd /var/www/sites;git checkout -b $keyName"
+ - sh -c "cd /var/www/sites;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - echo
+ - echo 'AWS LAM Replace main apache2 configuration with no-ssl configuration'
  - rm /etc/apache2/apache2.conf
+ - cp -p /var/www/no-ssl/apache2.conf /etc/apache2/apache2.conf
+ - echo
+ - echo 'AWS LAM Use updated dir, alias and autoindex modules'
  - rm /etc/apache2/mods-available/alias.conf
  - rm /etc/apache2/mods-available/autoindex.conf
  - rm /etc/apache2/mods-available/dir.conf
  - a2enmod rewrite
- - /var/www/no-ssl/Implement_no-ssl_conf.bash
+ - ln -s /var/www/no-ssl/no-ssl_alias.conf /etc/apache2/mods-available/alias.conf
+ - ln -s /var/www/no-ssl/no-ssl_autoindex.conf /etc/apache2/mods-available/autoindex.conf
+ - ln -s /var/www/no-ssl/no-ssl_dir.conf /etc/apache2/mods-available/dir.conf
  - echo
  - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
  - sed -i "s|aws|ubuntu|" /etc/apache2/apache2.conf
@@ -112,8 +137,6 @@ runcmd:
  - sh -c "cd /var/www/gci;git remote add gitlab git@gitlab.com:aws-lam/gci"
  - sh -c "cd /var/www/gci;git checkout -b $keyName"
  - sh -c "cd /var/www/gci;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
- - ln -s /var/www/gci/gci_apache2.conf /etc/apache2/sites-available/000-gci.conf
- - a2ensite 000-gci
  - echo
  - echo 'QEMU LAM Install aws-cli snap'
  - snap install aws-cli --classic
@@ -174,9 +197,14 @@ runcmd:
  - sh -c "cd /var/www/lam;git checkout ubuntu"
  - sh -c "cd /var/www/lam;git checkout -b $keyName"
  - sh -c "cd /var/www/lam;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - echo
+ - echo 'AWS LAM Use updated info and status modules'
  - rm /etc/apache2/mods-available/info.conf
  - rm /etc/apache2/mods-available/status.conf
- - /var/www/lam/Implement_lam_conf.bash
+ - ln -s /var/www/lam/lam_info.conf /etc/apache2/mods-available/info.conf
+ - a2enmod info
+ - ln -s /var/www/lam/lam_status.conf /etc/apache2/mods-available/status.conf
+ - a2enmod status
  - echo
  - echo 'QEMU LAM Create lam murakami staff credentials.'
  - /var/www/lam/Create-lam-murakami-staff.bash
@@ -193,6 +221,9 @@ runcmd:
  - mysql --table < /var/www/lam/lam-user.sql
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
+ - echo
+ - echo 'AWS LAM Activate aws and additional sites'
+ - /var/www/aws/qemu-lam-apache2-sites-configuration-Debian-Ubuntu.bash
  - echo
  - echo 'QEMU LAM Alaska Set lam as owner of /var/www'
  - chown -R lam:www-data /var/www
