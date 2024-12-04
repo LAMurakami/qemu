@@ -106,11 +106,11 @@ runcmd:
  - sh -c "cd /var/www/sites;git checkout -b $keyName"
  - sh -c "cd /var/www/sites;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - echo
- - echo 'AWS LAM Replace main apache2 configuration with no-ssl configuration'
+ - echo 'QEMU LAM Replace main apache2 configuration with no-ssl configuration'
  - rm /etc/apache2/apache2.conf
  - cp -p /var/www/no-ssl/apache2.conf /etc/apache2/apache2.conf
  - echo
- - echo 'AWS LAM Use updated dir, alias and autoindex modules'
+ - echo 'QEMU LAM Use updated dir, alias and autoindex modules'
  - rm /etc/apache2/mods-available/alias.conf
  - rm /etc/apache2/mods-available/autoindex.conf
  - rm /etc/apache2/mods-available/dir.conf
@@ -198,7 +198,7 @@ runcmd:
  - sh -c "cd /var/www/lam;git checkout -b $keyName"
  - sh -c "cd /var/www/lam;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - echo
- - echo 'AWS LAM Use updated info and status modules'
+ - echo 'QEMU LAM Use updated info and status modules'
  - rm /etc/apache2/mods-available/info.conf
  - rm /etc/apache2/mods-available/status.conf
  - ln -s /var/www/lam/lam_info.conf /etc/apache2/mods-available/info.conf
@@ -222,7 +222,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
  - echo
- - echo 'AWS LAM Activate aws and additional sites'
+ - echo 'QEMU LAM Activate aws and additional sites'
  - /var/www/aws/qemu-lam-apache2-sites-configuration-Debian-Ubuntu.bash
  - echo
  - echo 'QEMU LAM Alaska Set lam as owner of /var/www'
