@@ -116,7 +116,7 @@ runcmd:
  - echo 'QEMU LAM Link to .aws resources for root'
  - ln -s /home/fedora/.aws /root/.aws
  - echo
- - echo 'AWS LAM Copy ssh key root'
+ - echo 'QEMU LAM Copy ssh key root'
  - cp /home/fedora/.ssh/git_ak20_id_rsa /root/.ssh
  - echo 'Host localhost' >> /root/.ssh/config
  - echo 'IdentityFile /root/.ssh/git_ak20_id_rsa' >> /root/.ssh/config
@@ -142,7 +142,7 @@ runcmd:
  - dnf -y install glances vim-enhanced
  - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
- - git clone git@localhost:aws /var/www/aws
+ - git clone https://github.com/LAMurakami/aws /var/www/aws
  - sh -c "cd /var/www/aws;git remote set-url origin git@aws:aws"
  - sh -c "cd /var/www/aws;git remote rename origin aws"
  - sh -c "cd /var/www/aws;git remote add github git@github.com:LAMurakami/aws"
@@ -176,9 +176,15 @@ runcmd:
  - sh -c "cd /var/www/no-ssl;git checkout -b $keyName"
  - sh -c "cd /var/www/no-ssl;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - sed -i 's|aws.lam1.us|fedora.lam1.us|' /var/www/no-ssl/no-ssl_apache2.conf
- - ln -s /var/www/no-ssl/no-ssl_apache2.conf /etc/httpd/conf.d/000-no-ssl.conf
- - rm /etc/httpd/conf.d/welcome.conf
- - touch /etc/httpd/conf.d/welcome.conf
+ - echo
+ - echo 'QEMU LAM Alaska Installing z.lam1.us web site'
+ - git clone https://github.com/LAMurakami/z /var/www/z
+ - sh -c "cd /var/www/z;git remote set-url origin git@github.com:LAMurakami/z"
+ - sh -c "cd /var/www/z;git remote rename origin github"
+ - sh -c "cd /var/www/z;git remote add aws git@aws:z"
+ - sh -c "cd /var/www/z;git remote add gitlab git@gitlab.com:aws-lam/z"
+ - sh -c "cd /var/www/z;git checkout -b $keyName"
+ - sh -c "cd /var/www/z;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - echo
  - echo 'QEMU LAM Install lam web site'
  # Extract lam from archive that includes MediWiki
@@ -208,8 +214,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM Update apache2 ssl configuration'
  - rm /etc/httpd/conf.d/ssl.conf
- - sed -i 's|${APACHE_LOG_DIR}|logs|' /var/www/lam/lam_apache2.conf
- - ln -s /var/www/lam/lam_apache2.conf /etc/httpd/conf.d/ssl.conf
+ - ln -s /var/www/lam/ssl.conf /etc/httpd/conf.d/ssl.conf
  - echo
  - echo 'QEMU LAM Configure /server-status /server-info ReadmeName'
  - ln -s /var/www/lam/lam_info.conf /etc/httpd/conf.d/info.conf
@@ -243,7 +248,6 @@ runcmd:
  - sh -c "cd /var/www/sites;git remote add gitlab git@gitlab.com:aws-lam/sites"
  - sh -c "cd /var/www/sites;git checkout -b $keyName"
  - sh -c "cd /var/www/sites;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
- - ln -s /var/www/sites/sites_apache2.conf /etc/httpd/conf.d/zzz_030_sites.conf
  - echo
  - echo 'QEMU LAM Installing arsc.lam1.us web site'
  - git clone git@localhost:arsc /var/www/arsc
@@ -253,7 +257,6 @@ runcmd:
  - sh -c "cd /var/www/arsc;git remote add gitlab git@gitlab.com:aws-lam/arsc"
  - sh -c "cd /var/www/arsc;git checkout -b $keyName"
  - sh -c "cd /var/www/arsc;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
- - ln -s /var/www/arsc/arsc_apache2.conf /etc/httpd/conf.d/zzz_060_arsc.conf
  - echo
  - echo 'QEMU LAM Alaska Installing gci.lam1.us web site'
  - git clone git@localhost:gci /var/www/gci
@@ -263,7 +266,6 @@ runcmd:
  - sh -c "cd /var/www/gci;git remote add gitlab git@gitlab.com:aws-lam/gci"
  - sh -c "cd /var/www/gci;git checkout -b $keyName"
  - sh -c "cd /var/www/gci;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
- - ln -s /var/www/gci/gci_apache2.conf /etc/httpd/conf.d/000-gci.conf
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
  - echo
@@ -273,6 +275,9 @@ runcmd:
  - echo 'QEMU LAM Create /phpinfo.php page'
  - [ sh, -c, 'echo "<?php phpinfo(); ?>" > /var/www/lam/html/phpinfo.php' ]
  - sh -c "cd /var/www/lam;git add html/phpinfo.php"
+ - echo
+ - echo 'QEMU LAM Activate aws and additional sites'
+ - /var/www/aws/qemu-lam-apache2-sites-configuration-Fedora.bash
  - echo
  - echo 'QEMU LAM commit git changes from initialization'
  - /var/www/aws/AWS-LAM-git-commit.bash $keyName lam no-ssl
@@ -284,7 +289,7 @@ runcmd:
  - systemctl enable httpd
  - echo
  - echo 'QEMU LAM List Installed Packages information'
- - dnf repoquery -a --installed
+ - dnf repoquery --installed
  - echo
  - echo 'QEMU LAM ***** Update plocate database *****'
  - updatedb
