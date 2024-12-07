@@ -120,8 +120,6 @@ runcmd:
  - sh -c "cd /var/www/gci;git remote add gitlab git@gitlab.com:aws-lam/gci"
  - sh -c "cd /var/www/gci;git checkout -b $keyName"
  - sh -c "cd /var/www/gci;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
- - rm /etc/apache2/default-server.conf
- - cp /var/www/gci/opensuse/etc/apache2/default-server.conf /etc/apache2/default-server.conf
  - echo
  - echo 'QEMU LAM Installing no-ssl Apache configuration'
  - git clone https://github.com/LAMurakami/no-ssl /var/www/no-ssl
@@ -131,7 +129,6 @@ runcmd:
  - sh -c "cd /var/www/no-ssl;git remote add gitlab git@gitlab.com:aws-lam/no-ssl"
  - sh -c "cd /var/www/no-ssl;git checkout -b $keyName"
  - sh -c "cd /var/www/no-ssl;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
- - ln -s /var/www/no-ssl/no-ssl_apache2.conf /etc/apache2/vhosts.d/opensuse.conf
  - a2enmod mod_perl
  - a2enmod rewrite
  - echo
@@ -143,7 +140,15 @@ runcmd:
  - sh -c "cd /var/www/z;git remote add gitlab git@gitlab.com:aws-lam/z"
  - sh -c "cd /var/www/z;git checkout -b $keyName"
  - sh -c "cd /var/www/z;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
-
+ - echo
+ - echo 'QEMU LAM Alaska Installing sites.lam1.us web site (for /About/Public)'
+ - git clone https://github.com/LAMurakami/sites /var/www/sites
+ - sh -c "cd /var/www/sites;git remote set-url origin git@github.com:LAMurakami/sites"
+ - sh -c "cd /var/www/sites;git remote rename origin github"
+ - sh -c "cd /var/www/sites;git remote add aws git@aws:sites"
+ - sh -c "cd /var/www/sites;git remote add gitlab git@gitlab.com:aws-lam/sites"
+ - sh -c "cd /var/www/sites;git checkout -b $keyName"
+ - sh -c "cd /var/www/sites;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - echo
  - echo 'QEMU LAM Configuring perl to include LAM perl modules'
  - ln -s /var/www/no-ssl/site_perl-LAM /usr/lib/perl5/site_perl/LAM
@@ -206,7 +211,6 @@ runcmd:
  - a2enmod authz_groupfile.load
  - a2enflag SSL
  - a2enflag STATUS
- - ln -s /var/www/no-ssl/opensuse/etc/apache2/vhosts.d/ssl.conf /etc/apache2/vhosts.d/ssl.conf
  - echo
  - echo 'QEMU LAM Tell git installing in /var/www/lam is O.K.'
  - git config --system --add safe.directory /var/www/lam
@@ -226,6 +230,10 @@ runcmd:
  - ln -s /var/www/lam/lam_status.conf /etc/apache2/mod_status.conf
  - a2enmod mod_status
  - echo
+ - echo 'QEMU LAM Setup openSuSE default server configuration'
+ - rm /etc/apache2/default-server.conf
+ - cp /var/www/lam/apache2.conf /etc/apache2/default-server.conf
+ - echo
  - echo 'QEMU LAM Create lam murakami staff credentials.'
  - /var/www/lam/Create-lam-murakami-staff.bash
  - echo
@@ -244,6 +252,9 @@ runcmd:
  - sed -i '1 s|Alias /git "/usr/share/gitweb/"|Alias /gitweb "/usr/share/gitweb/"|' /etc/apache2/conf.d/gitweb.conf
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
  - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak23/home/git/|g" /etc/gitweb.conf
+ - echo
+ - echo 'QEMU LAM Activate aws and additional sites'
+ - /var/www/aws/qemu-lam-apache2-sites-configuration-OpenSUSE.bash
  - echo
  - echo 'QEMU LAM Alaska Set lam as owner of /var/www'
  - chown -R lam:www /var/www
