@@ -97,7 +97,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM Create git user'
  - groupadd -g 206 staff
- - useradd -g staff -G staff -M -d /mnt/ak20-Bk/Bk2/ak23/home/git -u 4896 git
+ - useradd -g staff -G staff -M -d /mnt/ak20-Bk/Bk2/aws/efs/git -u 4896 git
  - echo
  - echo 'QEMU LAM Alaska Report user-data for this instance (CloudInit directives)'
  - echo
@@ -229,7 +229,7 @@ runcmd:
  - dnf -y install gitweb
  - sed -i '1 s|Alias /git /var/www/git|Alias /gitweb /var/www/git|' /etc/httpd/conf.d/gitweb.conf
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
- - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak23/home/git/|g" /etc/gitweb.conf
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/aws/efs/git/|g" /etc/gitweb.conf
  - echo
  - echo 'QEMU LAM Creating {lam|Mediawiki} database and user'
  - mysql --table < /var/www/lam/lam-user.sql
