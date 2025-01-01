@@ -52,6 +52,9 @@ runcmd:
  - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
  - echo '10.55.5.20 ak20.lam1.us ak20' >> /etc/hosts
  - echo
+ - echo 'QEMU LAM Add localhost to known_hosts'
+ - ssh-keyscan -t ed25519 localhost >> /etc/ssh/ssh_known_hosts
+ - echo
  - echo 'QEMU LAM Install some packages for LAM Alaska'
  - export DEBIAN_FRONTEND=noninteractive
  - apt-get install --yes rcs mailutils swish++ libio-captureoutput-perl libcgi-pm-perl libdbi-perl libdbd-mysql-perl texlive lynx apache2-doc libapache2-mod-perl2 libbsd-resource-perl libapache2-reload-perl apache2-suexec-custom x11-apps whois libgtk2.0-0 plocate
@@ -209,6 +212,9 @@ runcmd:
  - echo 'QEMU LAM Create lam murakami staff credentials.'
  - /var/www/lam/Create-lam-murakami-staff.bash
  - echo
+ - echo 'QEMU LAM Create git user'
+ - useradd -g staff -G staff -M -d /mnt/ak20-Bk/Bk2/aws/efs/git -u 4896 git
+ - echo
  - echo 'QEMU LAM Create Multicount directory'
  - mkdir /var/www/Multicount
  - chown lam:www-data /var/www/Multicount
@@ -241,7 +247,7 @@ runcmd:
  - apt-get install -y gitweb
  - a2disconf gitweb
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
- - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak23/home/git/|g" /etc/gitweb.conf
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/aws/efs/git/|g" /etc/gitweb.conf
  - systemctl restart apache2
  - echo
  - echo 'QEMU LAM Alaska Final Cloud-init etckeeper commit'
