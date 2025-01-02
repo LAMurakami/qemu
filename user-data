@@ -1,4 +1,8 @@
 #cloud-config
+# user-data - qemu repo - opensuse branch - openSUSE Leap 15.6
+# https://gitlab.com/aws-lam/qemu/-/blob/opensuse/user-data?ref_type=heads
+# https://gitlab.com/aws-lam/qemu/-/blob/opensuse/meta-data?ref_type=heads
+
 password: opensuse
 chpasswd:
   expire: False
@@ -93,6 +97,9 @@ runcmd:
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '12s/localhost/opensuse.lam1.us opensuse localhost/' /etc/hosts
  - echo '10.55.5.20 ak20.lam1.us ak20' >> /etc/hosts
+ - echo
+ - echo 'QEMU LAM Add localhost to known_hosts'
+ - ssh-keyscan -t ed25519 localhost >> /etc/ssh/ssh_known_hosts
  - echo
  - echo 'QEMU LAM Create logs/ sybmolic link for Apache2 configuration use'
  - ln -s /var/log/apache2 /srv/www/logs
@@ -237,6 +244,9 @@ runcmd:
  - echo 'QEMU LAM Create lam murakami staff credentials.'
  - /var/www/lam/Create-lam-murakami-staff.bash
  - echo
+ - echo 'QEMU LAM Create git user'
+ - useradd -g staff -G staff -M -d /mnt/ak20-Bk/Bk2/aws/efs/git -u 4896 git
+ - echo
  - echo 'QEMU LAM Create Multicount directory'
  - mkdir /var/www/Multicount
  - chown wwwrun:www /var/www/Multicount
@@ -251,7 +261,7 @@ runcmd:
  - zypper --non-interactive install git-web
  - sed -i '1 s|Alias /git "/usr/share/gitweb/"|Alias /gitweb "/usr/share/gitweb/"|' /etc/apache2/conf.d/gitweb.conf
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
- - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak23/home/git/|g" /etc/gitweb.conf
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/aws/efs/git/|g" /etc/gitweb.conf
  - echo
  - echo 'QEMU LAM Activate aws and additional sites'
  - /var/www/aws/qemu-lam-apache2-sites-configuration-OpenSUSE.bash
