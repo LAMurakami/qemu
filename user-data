@@ -1,4 +1,8 @@
 #cloud-config
+# user-data - qemu repo - noble branch - Ubuntu 24.04 Noble Numbat
+# https://gitlab.com/aws-lam/qemu/-/blob/noble/user-data?ref_type=heads
+# https://gitlab.com/aws-lam/qemu/-/blob/noble/meta-data?ref_type=heads
+
 password: ubuntu
 chpasswd:
   expire: False
