@@ -1,4 +1,8 @@
 #cloud-config
+# user-data - qemu repo - debian branch - Debian 12
+# https://gitlab.com/aws-lam/qemu/-/blob/debian/user-data?ref_type=heads
+# https://gitlab.com/aws-lam/qemu/-/blob/debian/meta-data?ref_type=heads
+
 password: debian
 chpasswd:
   expire: False
@@ -84,6 +88,9 @@ runcmd:
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '1s/localhost/debian.lam1.us debian localhost/' /etc/hosts
  - echo '10.55.5.20 ak20.lam1.us ak20' >> /etc/hosts
+ - echo
+ - echo 'QEMU LAM Add localhost to known_hosts'
+ - ssh-keyscan -t ed25519 localhost >> /etc/ssh/ssh_known_hosts
  - echo
  - echo 'QEMU LAM Set vim as default editor for system'
  - update-alternatives --set editor /usr/bin/vim.basic
@@ -233,6 +240,9 @@ runcmd:
  - echo 'QEMU LAM Create lam murakami staff credentials.'
  - /var/www/lam/Create-lam-murakami-staff.bash
  - echo
+ - echo 'QEMU LAM Create git user'
+ - useradd -g staff -G staff -M -d /mnt/ak20-Bk/Bk2/aws/efs/git -u 4896 git
+ - echo
  - echo 'QEMU LAM Create Multicount directory'
  - mkdir /var/www/Multicount
  - chown www-data:www-data /var/www/Multicount
@@ -261,7 +271,7 @@ runcmd:
  - apt-get install -y gitweb
  - a2disconf gitweb
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
- - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak23/home/git/|g" /etc/gitweb.conf
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/aws/efs/git/|g" /etc/gitweb.conf
  - systemctl restart apache2
  - echo
  - echo 'QEMU LAM Install glances after other packages'
