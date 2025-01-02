@@ -1,7 +1,7 @@
 #cloud-config
 # user-data - qemu repo - fedora branch - Fedora 41.1
-# https://gitlab.com/aws-lam/qemu/-/blob/fedora/user-data?ref_type=heads
-# https://gitlab.com/aws-lam/qemu/-/blob/fedora/meta-data?ref_type=heads
+# https://gitlab.com/aws-lam/qemu/-/blob/fedora-packages/user-data?ref_type=heads
+# https://gitlab.com/aws-lam/qemu/-/blob/fedora-packages/meta-data?ref_type=heads
 
 password: fedora
 chpasswd:
