@@ -190,6 +190,8 @@ runcmd:
  - sh -c "cd /var/www/z;git checkout -b $keyName"
  - sh -c "cd /var/www/z;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - echo
+ - echo 'QEMU LAM Replace main apache2 configuration with no-ssl configuration'
+ - echo
  - echo 'QEMU LAM Install lam web site'
  # Extract lam from archive that includes MediWiki
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/lam.tgz --directory /var/www
