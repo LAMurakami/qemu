@@ -87,7 +87,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '1s/localhost/debian.lam1.us debian localhost/' /etc/hosts
- - echo '10.55.5.20 ak20.lam1.us ak20' >> /etc/hosts
+ - echo '192.168.0.20 ak20.lam1.us ak20' >> /etc/hosts
  - echo
  - echo 'QEMU LAM Add localhost to known_hosts'
  - ssh-keyscan -t ed25519 localhost >> /etc/ssh/ssh_known_hosts
