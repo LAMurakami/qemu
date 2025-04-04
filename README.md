@@ -19,8 +19,8 @@ to launch a LAM Alaska clone on an AWS instance on either x86 or ARM with
 Ubuntu Server 22.04, Amazon Linux 2023 or Amazon Linux 2 as the OS.
 
 I use QEMU with the KVM Hypervisor.Framework to allow the guest to run
-directly on the host CPU.  I run the instances on ak19 which has 6 x86 cores
-(12 threads) and give it 2 threads (a whole core).  The user-data for the
+directly on the host CPU.  I run the instances on ak23 which has 4 x86 cores
+(8 threads) and give it 2 threads (a whole core).  The user-data for the
 master branch is for an Ubuntu cloud image as specified in the tutorial.
 The fedora, debian, and opensuse branches are for the respective OS.
 
