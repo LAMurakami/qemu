@@ -181,8 +181,8 @@ runcmd:
  - mount -a -t nfs4
  - df -Th --exclude-type=tmpfs --exclude-type=devtmpfs
  - echo
- - echo 'QEMU LAM Alaska Installing GNU which v2.21 compiled for Ubuntu Server 22.04'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/which-Ubuntu-22-04.tgz --directory /usr/local
+ - echo 'QEMU LAM Alaska Installing GNU which v2.23 compiled for Ubuntu Server 22.04'
+ - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/which-v2.23-man-fix-Ubuntu-24-04-x86.tgz --directory /usr/local
  - file /usr/local/bin/which
  - echo
  - echo 'QEMU LAM Alaska Installing GNU tnef 1.4.18 compiled for Ubuntu Server 22.04'
