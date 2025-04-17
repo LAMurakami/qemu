@@ -169,6 +169,10 @@ runcmd:
  - sh -c "cd /var/www/lam;git checkout -b $keyName"
  - sh -c "cd /var/www/lam;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - echo
+ - echo 'QEMU LAM - Use which-v2.23-man-fix compiled for Fedora 42'
+ - tar -xzf /mnt/ak20-ext4/Install/QEMU/Fedora-42/which-v2.23-man-fix-fedora-42-1-x86.tgz --directory /usr/local
+ - cp /var/www/lam/etc/profile.d/which2.sh /etc/profile.d
+ - echo
  - echo 'QEMU LAM Update from default to LAM ubuntu web configuration'
  - sed -i "s|aws|fedora|" /var/www/no-ssl/apache2.conf
  - echo
