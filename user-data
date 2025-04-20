@@ -161,6 +161,9 @@ runcmd:
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/which-v2.23-man-fix-Ubuntu-24-04-x86.tgz --directory /usr/local
  - file /usr/local/bin/which
  - echo
+ - echo "LAM AWS Use GNU which function for bash users"
+ - cp /var/www/aws/etc/profile.d/which2.sh /etc/profile.d
+ - echo
  - echo 'QEMU LAM Alaska Installing GNU tnef 1.4.18 compiled for Ubuntu Server 22.04'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/tnef-Ubuntu-22-04.tgz --directory /usr/local
  - file /usr/local/bin/tnef
