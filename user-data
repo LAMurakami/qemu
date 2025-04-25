@@ -87,7 +87,6 @@ runcmd:
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '1s/localhost/debian.lam1.us debian localhost/' /etc/hosts
- - echo '192.168.0.20 ak20.lam1.us ak20' >> /etc/hosts
  - echo
  - echo 'QEMU LAM Add localhost to known_hosts'
  - ssh-keyscan -t ed25519 localhost >> /etc/ssh/ssh_known_hosts
@@ -106,6 +105,9 @@ runcmd:
  - sh -c "cd /var/www/aws;git remote add gitlab git@gitlab.com:aws-lam/aws"
  - sh -c "cd /var/www/aws;git checkout -b $keyName"
  - sh -c "cd /var/www/aws;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - echo
+ - echo 'QEMU LAM Add LAM Alaska LAN machines to /etc/hosts'
+ - cat /var/www/aws/etc/hosts-lam-ak-lan.txt >> /etc/hosts
  - echo
  - echo 'QEMU LAM Alaska Cloud Guest motd'
  - ln -s /var/www/aws/etc/update-motd.d/51-cloudguest /etc/update-motd.d
