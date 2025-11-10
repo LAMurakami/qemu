@@ -209,8 +209,8 @@ runcmd:
  - chmod 775 /var/www/Multicount
  - echo
  - echo 'QEMU LAM Install LAM perl modules'
- - mkdir -p /usr/local/share/perl5/5.40
- - ln -s /var/www/no-ssl/site_perl-LAM /usr/local/share/perl5/5.40/LAM
+ - mkdir -p /usr/local/share/perl5/5.42
+ - ln -s /var/www/no-ssl/site_perl-LAM /usr/local/share/perl5/5.42/LAM
  - echo
  - chmod a+rx /var/log/httpd
  - echo
