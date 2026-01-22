@@ -74,7 +74,7 @@ runcmd:
  - git config --system init.defaultBranch master
  - echo
  - echo 'QEMU LAM Alaska Install etckeeper to track configuration changes'
- - apt-get install etckeeper
+ - apt-get install -y etckeeper
  - echo
  - echo 'QEMU LAM Alaska Adding a swap partition'
  - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
@@ -83,7 +83,7 @@ runcmd:
  - swapon -s
  - echo
  - echo 'QEMU LAM Alaska Install texlive after swap is enabled'
- - apt-get install texlive
+ - apt-get install -y texlive
  - echo
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
