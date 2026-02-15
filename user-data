@@ -221,6 +221,12 @@ runcmd:
  - echo 'QEMU LAM Create lam murakami staff credentials.'
  - /var/www/lam/Create-lam-murakami-staff.bash
  - echo
+ - echo 'QEMU LAM Update root login message.'
+ - sed -i 's|Please login as the user |Please login as \\"lam\\", \\"murakami\\" or |' /root/.ssh/authorized_keys
+ - echo
+ - echo 'QEMU LAM Add git_ak20_id_rsa to root authorized_keys'
+ - cat /var/www/lam/root/git_ak20_id_rsa.pub >> /root/.ssh/authorized_keys
+ - echo
  - echo 'QEMU LAM Create git user'
  - useradd -g staff -G staff -M -d /mnt/ak20-Bk/Bk2/aws/efs/git -u 4896 git
  - echo
