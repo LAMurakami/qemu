@@ -308,6 +308,12 @@ runcmd:
  - echo 'QEMU LAM Create lam murakami staff credentials.'
  - /var/www/lam/Create-lam-murakami-staff.bash
  - echo
+ - echo 'QEMU LAM Update root login message.'
+ - sed -i 's|Please login as the user |Please login as \\"lam\\", \\"murakami\\" or |' /root/.ssh/authorized_keys
+ - echo
+ - echo 'QEMU LAM Add git_ak20_id_rsa to root authorized_keys'
+ - cat /var/www/lam/root/git_ak20_id_rsa.pub >> /root/.ssh/authorized_keys
+ - echo
  - echo 'QEMU LAM Change ownership of /var/www'
  - chown -R lam:apache /var/www
  - chown -R apache:apache /var/www/Multicount
