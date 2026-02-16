@@ -183,8 +183,8 @@ runcmd:
  - chmod 775 /var/www/Multicount
  - echo
  - echo 'QEMU LAM Install LAM perl modules'
- - mkdir -p /usr/local/share/perl5/5.40
- - ln -s /var/www/no-ssl/site_perl-LAM /usr/local/share/perl5/5.40/LAM
+ - mkdir -p /usr/local/share/perl5/5.42
+ - ln -s /var/www/no-ssl/site_perl-LAM /usr/local/share/perl5/5.42/LAM
  - echo
  - chmod a+rx /var/log/httpd
  - echo
@@ -276,6 +276,12 @@ runcmd:
  - echo
  - echo 'QEMU LAM Alaska Adding plocate path for ak20 nfs mounted volumes'
  - echo 'export LOCATE_PATH=/mnt/ak20-Bk/plocate.db:/mnt/ak20-ext4/plocate.db' > /etc/profile.d/plocate.sh
+ - echo
+ - echo 'QEMU LAM Update root login message.'
+ - sed -i 's|Please login as the user |Please login as \\"lam\\", \\"murakami\\" or |' /root/.ssh/authorized_keys
+ - echo
+ - echo 'QEMU LAM Add git_ak20_id_rsa to root authorized_keys'
+ - cat /var/www/lam/root/git_ak20_id_rsa.pub >> /root/.ssh/authorized_keys
  - echo
  - echo 'QEMU LAM Create lam murakami staff credentials.'
  - /var/www/lam/Create-lam-murakami-staff.bash
