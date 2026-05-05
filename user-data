@@ -55,15 +55,12 @@ runcmd:
  - echo 'QEMU LAM Set hostname and localhost alias in /etc/hosts'
  - sed -i '1s/localhost/ubuntu.lam1.us ubuntu localhost/' /etc/hosts
  - echo
- - echo 'QEMU LAM Add localhost to known_hosts'
- - ssh-keyscan -t ed25519 localhost >> /etc/ssh/ssh_known_hosts
- - echo
  - echo 'QEMU LAM Install some packages for LAM Alaska'
  - export DEBIAN_FRONTEND=noninteractive
  - apt-get install --yes rcs mailutils swish++ libio-captureoutput-perl libcgi-pm-perl libdbi-perl libdbd-mysql-perl texlive lynx apache2-doc libapache2-mod-perl2 libbsd-resource-perl libapache2-reload-perl apache2-suexec-custom x11-apps whois libgtk2.0-0 plocate
  - echo
  - echo 'QEMU LAM Install php including apache2 mod'
- - apt-get install --yes php php-gd php8.3-xml php-mysql libapache2-mod-php php-mbstring php-intl php-apcu
+ - apt-get install --yes php php-gd php8.5-xml php-mysql libapache2-mod-php php-mbstring php-intl php-apcu
  - echo 'QEMU LAM Set vim as default editor for system'
  - update-alternatives --set editor /usr/bin/vim.basic
  - echo
@@ -87,6 +84,14 @@ runcmd:
  - echo
  - echo 'QEMU LAM Alaska Check US Alaska local time for this system'
  - ls -lF --time-style=long-iso /etc/localtime
+ - echo
+ - echo 'QEMU LAM setup root to aws ssh config'
+ - cp /var/www/aws/root/ssh/config /root/.ssh/config
+ - sed -i '/AddressFamily inet6/d' /root/.ssh/config
+ - cp /var/www/aws/etc/ssh/ssh_known_hosts /etc/ssh/ssh_known_hosts
+ - echo
+ - echo 'QEMU LAM Add localhost to known_hosts'
+ - ssh-keyscan -t ed25519 localhost >> /etc/ssh/ssh_known_hosts
  - echo
  - echo 'QEMU LAM Installing no-ssl Apache configuration'
  - git clone https://github.com/LAMurakami/no-ssl /var/www/no-ssl
@@ -147,9 +152,6 @@ runcmd:
  - sh -c "cd /var/www/gci;git checkout -b $keyName"
  - sh -c "cd /var/www/gci;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - echo
- - echo 'QEMU LAM Install aws-cli snap'
- - snap install aws-cli --classic
- - echo
  - echo 'QEMU LAM ***** Use private LAM Alaska resources *****'
  - echo
  - echo 'QEMU LAM Alaska Adding nfs4 mount to ak20:/mnt/ak20-ext4 and ak20:/mnt/ak20-Bk'
@@ -176,6 +178,9 @@ runcmd:
  - echo 'QEMU LAM Alaska Listen for ssh connections on alternate port 55520 and add ssh Banner'
  - cp /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/sshd_config /etc/ssh
  - ln -s /var/www/aws/etc/ssh/Banner.txt /etc/ssh
+ - echo
+ - echo 'QEMU LAM Omit hashing of new known host entries'
+ - sed -i '/HashKnownHosts/d' /etc/ssh/ssh_config
  - systemctl restart ssh
  - echo
  - echo 'QEMU LAM configure aws-lam IPv4 access including IPv6 tunnels'
@@ -187,6 +192,9 @@ runcmd:
  - echo
  - echo 'QEMU LAM Link to .aws resources for root'
  - ln -s /home/ubuntu/.aws /root/.aws
+ - echo
+ - echo 'QEMU LAM Add git_ak20_id_rsa key to root'
+ - cp /home/ubuntu/.ssh/git_ak20_id_rsa /root/.ssh
  - echo
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
@@ -252,8 +260,8 @@ runcmd:
  - chown -R ubuntu:ubuntu /home/ubuntu
  - echo
  - echo 'QEMU LAM Refreshing lam database'
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
+ - ssh aws cat /mnt/efs/Bk-20-MySQL.lam.sql.gz | gunzip -c | mariadb --user=lam lam
+ - ssh aws cat /mnt/efs/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
  - echo
  - echo 'QEMU LAM Install man2html after apache has been configured'
  - apt-get install -y man2html
