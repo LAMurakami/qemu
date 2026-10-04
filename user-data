@@ -147,9 +147,6 @@ runcmd:
  - sh -c "cd /var/www/gci;git checkout -b $keyName"
  - sh -c "cd /var/www/gci;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - echo
- - echo 'QEMU LAM Install aws-cli snap'
- - snap install aws-cli --classic
- - echo
  - echo 'QEMU LAM ***** Use private LAM Alaska resources *****'
  - echo
  - echo 'QEMU LAM Alaska Adding nfs4 mount to ak20:/mnt/ak20-ext4 and ak20:/mnt/ak20-Bk'
@@ -184,9 +181,6 @@ runcmd:
  - echo
  - echo 'QEMU LAM Alaska Installing ubuntu user bash resources'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/ubuntu
- - echo
- - echo 'QEMU LAM Link to .aws resources for root'
- - ln -s /home/ubuntu/.aws /root/.aws
  - echo
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
@@ -252,8 +246,8 @@ runcmd:
  - chown -R ubuntu:ubuntu /home/ubuntu
  - echo
  - echo 'QEMU LAM Refreshing lam database'
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
+ - cat /mnt/ak20-Bk/Bk2/ak20/Bk-20-MySQL.lam.sql.gz | gunzip -c | mariadb --user=lam lam
+ - cat /mnt/ak20-Bk/Bk2/ak20/Bk-20-MySQL.wikidb.sql.gz | gunzip -c | mariadb --user=lam wikidb
  - echo
  - echo 'QEMU LAM Install man2html after apache has been configured'
  - apt-get install -y man2html
