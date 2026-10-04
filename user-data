@@ -212,9 +212,6 @@ runcmd:
  - echo 'QEMU LAM Alaska Installing ubuntu user bash resources'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/ubuntu
  - echo
- - echo 'QEMU LAM Link to .aws resources for root'
- - ln -s /home/ubuntu/.aws /root/.aws
- - echo
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
  - echo 'QEMU LAM Installing Let-s Encrypt certificates for TLS encryption (HTTPS)'
@@ -279,8 +276,8 @@ runcmd:
  - chown -R ubuntu:ubuntu /home/ubuntu
  - echo
  - echo 'QEMU LAM Refreshing lam database'
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
+ - cat /mnt/ak20-Bk/Bk2/ak20/Bk-20-MySQL.lam.sql.gz | gunzip -c | mariadb --user=lam lam
+ - cat /mnt/ak20-Bk/Bk2/ak20/Bk-20-MySQL.wikidb.sql.gz | gunzip -c | mariadb --user=lam wikidb
  - echo
  - echo 'QEMU LAM Install man2html after apache has been configured'
  - apt-get install -y man2html
