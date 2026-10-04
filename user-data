@@ -85,11 +85,6 @@ runcmd:
  - echo 'QEMU LAM Alaska Check US Alaska local time for this system'
  - ls -lF --time-style=long-iso /etc/localtime
  - echo
- - echo 'QEMU LAM setup root to aws ssh config'
- - cp /var/www/aws/root/ssh/config /root/.ssh/config
- - sed -i '/AddressFamily inet6/d' /root/.ssh/config
- - cp /var/www/aws/etc/ssh/ssh_known_hosts /etc/ssh/ssh_known_hosts
- - echo
  - echo 'QEMU LAM Add localhost to known_hosts'
  - ssh-keyscan -t ed25519 localhost >> /etc/ssh/ssh_known_hosts
  - echo
@@ -190,9 +185,6 @@ runcmd:
  - echo 'QEMU LAM Alaska Installing ubuntu user bash resources'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/ubuntu
  - echo
- - echo 'QEMU LAM Link to .aws resources for root'
- - ln -s /home/ubuntu/.aws /root/.aws
- - echo
  - echo 'QEMU LAM Add git_ak20_id_rsa key to root'
  - cp /home/ubuntu/.ssh/git_ak20_id_rsa /root/.ssh
  - echo
@@ -260,8 +252,8 @@ runcmd:
  - chown -R ubuntu:ubuntu /home/ubuntu
  - echo
  - echo 'QEMU LAM Refreshing lam database'
- - ssh aws cat /mnt/efs/Bk-20-MySQL.lam.sql.gz | gunzip -c | mariadb --user=lam lam
- - ssh aws cat /mnt/efs/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
+ - cat /mnt/ak20-Bk/Bk2/ak20/Bk-20-MySQL.lam.sql.gz | gunzip -c | mariadb --user=lam lam
+ - cat /mnt/ak20-Bk/Bk2/ak20/Bk-20-MySQL.wikidb.sql.gz | gunzip -c | mariadb --user=lam wikidb
  - echo
  - echo 'QEMU LAM Install man2html after apache has been configured'
  - apt-get install -y man2html
