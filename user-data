@@ -68,7 +68,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM Create git user'
  - groupadd -g 206 staff
- - useradd -g staff -G staff -M -d /mnt/ak20-Bk/Bk2/aws/efs/git -u 4896 git
+ - useradd -g staff -G staff -M -d /mnt/ak20-Bk/Bk2/ak23/home/git -u 4896 git
  - echo
  - echo 'QEMU LAM Alaska Report user-data for this instance (CloudInit directives)'
  - echo
