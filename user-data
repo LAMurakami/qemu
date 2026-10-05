@@ -96,9 +96,6 @@ runcmd:
  - echo 'QEMU LAM Installing Amazon Linux 2 ec2-user bash resources for fedora user'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/ec2-user.tgz --directory /home/fedora
  - echo
- - echo 'QEMU LAM Link to .aws resources for root'
- - ln -s /home/fedora/.aws /root/.aws
- - echo
  - echo 'QEMU LAM Copy ssh key root'
  - cp /home/fedora/.ssh/git_ak20_id_rsa /root/.ssh
  - echo 'Host localhost' >> /root/.ssh/config
@@ -209,14 +206,14 @@ runcmd:
  - dnf -y install gitweb
  - sed -i '1 s|Alias /git /var/www/git|Alias /gitweb /var/www/git|' /etc/httpd/conf.d/gitweb.conf
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
- - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/aws/efs/git/|g" /etc/gitweb.conf
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak23/home/git/|g" /etc/gitweb.conf
  - echo
  - echo 'QEMU LAM Creating {lam|Mediawiki} database and user'
  - mysql --table < /var/www/lam/lam-user.sql
  - echo 'QEMU LAM Restore latest lam database backup from AWS S3'
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.lam.sql.gz - | gunzip -c | mysql --user=lam lam
+ - cat /mnt/ak20-Bk/Bk2/ak20/Bk-20-MySQL.lam.sql.gz | gunzip -c | mariadb --user=lam lam
  - echo 'QEMU LAM Restore latest LAM Alaska MediaWiki database backup from AWS S3'
- - aws s3 cp s3://lamurakami/Bk-20-MySQL.wikidb.sql.gz - | gunzip -c | mysql --user=lam wikidb
+ - cat /mnt/ak20-Bk/Bk2/ak20/Bk-20-MySQL.wikidb.sql.gz | gunzip -c | mariadb --user=lam wikidb
  - echo
  - echo 'QEMU LAM ***** Additional sites *****'
  - echo
