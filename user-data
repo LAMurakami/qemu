@@ -209,7 +209,7 @@ runcmd:
  - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak23/home/git/|g" /etc/gitweb.conf
  - echo
  - echo 'QEMU LAM Creating {lam|Mediawiki} database and user'
- - mysql --table < /var/www/lam/lam-user.sql
+ - mariadb --table < /var/www/lam/lam-user.sql
  - echo 'QEMU LAM Restore latest lam database backup from AWS S3'
  - cat /mnt/ak20-Bk/Bk2/ak20/Bk-20-MySQL.lam.sql.gz | gunzip -c | mariadb --user=lam lam
  - echo 'QEMU LAM Restore latest LAM Alaska MediaWiki database backup from AWS S3'
