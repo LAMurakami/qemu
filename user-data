@@ -208,9 +208,6 @@ runcmd:
  - echo 'QEMU LAM Alaska Installing ubuntu user bash resources for debian'
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/debian
  - echo
- - echo 'QEMU LAM Link to .aws resources for root'
- - ln -s /home/debian/.aws /root/.aws
- - echo
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
  - echo 'QEMU LAM Installing Let-s Encrypt certificates for TLS encryption (HTTPS)'
@@ -281,7 +278,7 @@ runcmd:
  - apt-get install -y gitweb
  - a2disconf gitweb
  - cp /var/www/aws/etc/gitweb.conf /etc/gitweb.conf
- - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/aws/efs/git/|g" /etc/gitweb.conf
+ - sed -i "s|/mnt/efs/git|/mnt/ak20-Bk/Bk2/ak23/home/git/|g" /etc/gitweb.conf
  - systemctl restart apache2
  - echo
  - echo 'QEMU LAM Install glances after other packages'
