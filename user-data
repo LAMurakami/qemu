@@ -256,7 +256,7 @@ runcmd:
  - chmod 775 /var/www/Multicount
  - echo
  - echo 'QEMU LAM Creating {lam|Mediawiki} database and user'
- - mysql --table < /var/www/lam/lam-user.sql
+ - mariadb --table < /var/www/lam/lam-user.sql
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
  - echo
