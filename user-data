@@ -96,14 +96,17 @@ runcmd:
  - echo 'QEMU LAM Create logs/ sybmolic link for Apache2 configuration use'
  - ln -s /var/log/apache2 /etc/apache2/logs
  - echo
+ - echo 'QEMU LAM Alaska Installing gci.lam1.us web site'
+ - git clone https://gitlab.com/aws-lam/gci.git /var/www/gci
+ - sh -c "cd /var/www/gci;git remote set-url origin git@gitlab.com:aws-lam/gci"
+ - sh -c "cd /var/www/gci;git remote rename origin gitlab"
+ - sh -c "cd /var/www/gci;git remote add ak20 git@ak20:gci"
+ - sh -c "cd /var/www/gci;git remote add github git@github.com:LAMurakami/gci"
+ - sh -c "cd /var/www/gci;git checkout -b $keyName"
+ - sh -c "cd /var/www/gci;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
- - git clone https://github.com/LAMurakami/aws /var/www/aws
- - sh -c "cd /var/www/aws;git remote set-url origin git@github.com:LAMurakami/aws"
- - sh -c "cd /var/www/aws;git remote rename origin github"
- - sh -c "cd /var/www/aws;git remote add aws git@aws:aws"
- - sh -c "cd /var/www/aws;git remote add gitlab git@gitlab.com:aws-lam/aws"
- - sh -c "cd /var/www/aws;git checkout -b $keyName"
- - sh -c "cd /var/www/aws;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - /var/www/gci/lam-gitlab-clone.bash aws $keyName
  - echo
  - echo 'QEMU LAM Add LAM Alaska LAN machines to /etc/hosts'
  - cat /var/www/aws/etc/hosts-lam-ak-lan.txt >> /etc/hosts
@@ -115,29 +118,13 @@ runcmd:
  - ls -lF --time-style=long-iso /etc/localtime
  - echo
  - echo 'QEMU LAM Installing no-ssl Apache configuration'
- - git clone https://github.com/LAMurakami/no-ssl /var/www/no-ssl
- - sh -c "cd /var/www/no-ssl;git remote set-url origin git@github.com:LAMurakami/no-ssl"
- - sh -c "cd /var/www/no-ssl;git remote rename origin github"
- - sh -c "cd /var/www/no-ssl;git remote add aws git@aws:no-ssl"
- - sh -c "cd /var/www/no-ssl;git remote add gitlab git@gitlab.com:aws-lam/no-ssl"
- - sh -c "cd /var/www/no-ssl;git checkout -b $keyName"
- - sh -c "cd /var/www/no-ssl;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - /var/www/gci/lam-gitlab-clone.bash no-ssl $keyName
+ - echo
  - echo 'QEMU LAM Alaska Installing z.lam1.us web site'
- - git clone https://github.com/LAMurakami/z /var/www/z
- - sh -c "cd /var/www/z;git remote set-url origin git@github.com:LAMurakami/z"
- - sh -c "cd /var/www/z;git remote rename origin github"
- - sh -c "cd /var/www/z;git remote add aws git@aws:z"
- - sh -c "cd /var/www/z;git remote add gitlab git@gitlab.com:aws-lam/z"
- - sh -c "cd /var/www/z;git checkout -b $keyName"
- - sh -c "cd /var/www/z;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - /var/www/gci/lam-gitlab-clone.bash z $keyName
+ - echo
  - echo 'QEMU LAM Alaska Installing sites.lam1.us web site'
- - git clone https://github.com/LAMurakami/sites /var/www/sites
- - sh -c "cd /var/www/sites;git remote set-url origin git@github.com:LAMurakami/sites"
- - sh -c "cd /var/www/sites;git remote rename origin github"
- - sh -c "cd /var/www/sites;git remote add aws git@aws:sites"
- - sh -c "cd /var/www/sites;git remote add gitlab git@gitlab.com:aws-lam/sites"
- - sh -c "cd /var/www/sites;git checkout -b $keyName"
- - sh -c "cd /var/www/sites;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - /var/www/gci/lam-gitlab-clone.bash sites $keyName
  - echo
  - echo 'QEMU LAM Replace main apache2 configuration with no-ssl configuration'
  - a2enmod rewrite
@@ -162,15 +149,6 @@ runcmd:
  - echo
  - echo 'QEMU LAM Enable x11 forwarding over ssh for sudo'
  - ln -s /var/www/no-ssl/xauthority.sh /etc/profile.d
- - echo
- - echo 'QEMU LAM Alaska Installing gci.lam1.us web site'
- - git clone https://github.com/LAMurakami/gci /var/www/gci
- - sh -c "cd /var/www/gci;git remote set-url origin git@github.com:LAMurakami/gci"
- - sh -c "cd /var/www/gci;git remote rename origin github"
- - sh -c "cd /var/www/gci;git remote add aws git@aws:gci"
- - sh -c "cd /var/www/gci;git remote add gitlab git@gitlab.com:aws-lam/gci"
- - sh -c "cd /var/www/gci;git checkout -b $keyName"
- - sh -c "cd /var/www/gci;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
  - echo
  - echo 'QEMU LAM ***** Use private LAM Alaska resources *****'
  - echo
