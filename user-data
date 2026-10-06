@@ -74,14 +74,17 @@ runcmd:
  - echo
  - cat /var/lib/cloud/instances/lam0/user-data.txt
  - echo
+ - echo 'QEMU LAM Alaska Installing gci.lam1.us web site'
+ - git clone https://gitlab.com/aws-lam/gci.git /var/www/gci
+ - sh -c "cd /var/www/gci;git remote set-url origin git@gitlab.com:aws-lam/gci"
+ - sh -c "cd /var/www/gci;git remote rename origin gitlab"
+ - sh -c "cd /var/www/gci;git remote add ak20 git@ak20:gci"
+ - sh -c "cd /var/www/gci;git remote add github git@github.com:LAMurakami/gci"
+ - sh -c "cd /var/www/gci;git checkout -b $keyName"
+ - sh -c "cd /var/www/gci;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - echo
  - echo 'QEMU LAM Alaska Installing aws.lam1.us web site'
- - git clone https://github.com/LAMurakami/aws /var/www/aws
- - sh -c "cd /var/www/aws;git remote set-url origin git@aws:aws"
- - sh -c "cd /var/www/aws;git remote rename origin aws"
- - sh -c "cd /var/www/aws;git remote add github git@github.com:LAMurakami/aws"
- - sh -c "cd /var/www/aws;git remote add gitlab git@gitlab.com:aws-lam/aws"
- - sh -c "cd /var/www/aws;git checkout -b $keyName"
- - sh -c "cd /var/www/aws;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - /var/www/gci/lam-gitlab-clone.bash aws $keyName
  - echo
  - echo 'QEMU LAM Add LAM Alaska LAN machines to /etc/hosts'
  - cat /var/www/aws/etc/hosts-lam-ak-lan.txt >> /etc/hosts
@@ -139,23 +142,11 @@ runcmd:
  - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/letsencrypt.tgz --directory /etc
  - echo
  - echo 'QEMU LAM Install no-ssl web site'
- - git clone git@localhost:no-ssl.git /var/www/no-ssl
- - sh -c "cd /var/www/no-ssl;git remote set-url origin git@aws:no-ssl"
- - sh -c "cd /var/www/no-ssl;git remote rename origin aws"
- - sh -c "cd /var/www/no-ssl;git remote add github git@github.com:LAMurakami/no-ssl"
- - sh -c "cd /var/www/no-ssl;git remote add gitlab git@gitlab.com:aws-lam/no-ssl"
- - sh -c "cd /var/www/no-ssl;git checkout -b $keyName"
- - sh -c "cd /var/www/no-ssl;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - /var/www/gci/lam-gitlab-clone.bash no-ssl $keyName
  - sed -i 's|aws.lam1.us|fedora.lam1.us|' /var/www/no-ssl/no-ssl_apache2.conf
  - echo
  - echo 'QEMU LAM Alaska Installing z.lam1.us web site'
- - git clone https://github.com/LAMurakami/z /var/www/z
- - sh -c "cd /var/www/z;git remote set-url origin git@github.com:LAMurakami/z"
- - sh -c "cd /var/www/z;git remote rename origin github"
- - sh -c "cd /var/www/z;git remote add aws git@aws:z"
- - sh -c "cd /var/www/z;git remote add gitlab git@gitlab.com:aws-lam/z"
- - sh -c "cd /var/www/z;git checkout -b $keyName"
- - sh -c "cd /var/www/z;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - /var/www/gci/lam-gitlab-clone.bash z $keyName
  - echo
  - echo 'QEMU LAM Replace main apache2 configuration with no-ssl configuration'
  - echo
@@ -218,31 +209,10 @@ runcmd:
  - echo 'QEMU LAM ***** Additional sites *****'
  - echo
  - echo 'QEMU LAM Installing sites.lam1.us web site'
- - git clone git@localhost:sites.git /var/www/sites
- - sh -c "cd /var/www/sites;git remote set-url origin git@aws:sites"
- - sh -c "cd /var/www/sites;git remote rename origin aws"
- - sh -c "cd /var/www/sites;git remote add github git@github.com:LAMurakami/sites"
- - sh -c "cd /var/www/sites;git remote add gitlab git@gitlab.com:aws-lam/sites"
- - sh -c "cd /var/www/sites;git checkout -b $keyName"
- - sh -c "cd /var/www/sites;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - /var/www/gci/lam-gitlab-clone.bash sites $keyName
  - echo
  - echo 'QEMU LAM Installing arsc.lam1.us web site'
- - git clone git@localhost:arsc /var/www/arsc
- - sh -c "cd /var/www/arsc;git remote set-url origin git@aws:arsc"
- - sh -c "cd /var/www/arsc;git remote rename origin aws"
- - sh -c "cd /var/www/arsc;git remote add github git@github.com:LAMurakami/arsc"
- - sh -c "cd /var/www/arsc;git remote add gitlab git@gitlab.com:aws-lam/arsc"
- - sh -c "cd /var/www/arsc;git checkout -b $keyName"
- - sh -c "cd /var/www/arsc;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
- - echo
- - echo 'QEMU LAM Alaska Installing gci.lam1.us web site'
- - git clone git@localhost:gci /var/www/gci
- - sh -c "cd /var/www/gci;git remote set-url origin git@aws:gci"
- - sh -c "cd /var/www/gci;git remote rename origin aws"
- - sh -c "cd /var/www/gci;git remote add github git@github.com:LAMurakami/gci"
- - sh -c "cd /var/www/gci;git remote add gitlab git@gitlab.com:aws-lam/gci"
- - sh -c "cd /var/www/gci;git checkout -b $keyName"
- - sh -c "cd /var/www/gci;git tag -a -m 'QEMU LAM Initialization' b0-$keyName"
+ - /var/www/gci/lam-gitlab-clone.bash arsc $keyName
  - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
  - echo
