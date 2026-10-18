@@ -37,7 +37,7 @@ runcmd:
  - git config --system init.defaultBranch master
  - echo
  - echo 'QEMU LAM Alaska Adding a swap partition'
- - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
+ - echo 'UUID=b1fe1a15-b4f4-446b-b277-a2b8dade48ca swap swap defaults 0 0' >> /etc/fstab
  - swapon --all
  - free
  - swapon -s
@@ -99,6 +99,9 @@ runcmd:
  - echo
  - echo 'QEMU LAM Alaska Installing sites.lam1.us web site'
  - /var/www/gci/lam-gitlab-clone.bash sites $keyName
+ - echo
+ - echo 'QEMU LAM Alaska Installing arsc.lam1.us web site'
+ - /var/www/gci/lam-gitlab-clone.bash arsc $keyName
  - echo
  - echo 'QEMU LAM Replace main apache2 configuration with no-ssl configuration'
  - rm /etc/apache2/apache2.conf
@@ -214,7 +217,7 @@ runcmd:
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
  - echo
  - echo 'QEMU LAM Activate aws and additional sites'
- - /var/www/aws/qemu-lam-apache2-sites-configuration-Debian-Ubuntu.bash
+ - /var/www/gci/qemu-lam-apache2-sites-configuration-Debian-Ubuntu.bash
  - echo
  - echo 'QEMU LAM Alaska Set lam as owner of /var/www'
  - chown -R lam:www-data /var/www
