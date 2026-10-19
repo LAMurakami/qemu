@@ -29,7 +29,7 @@ runcmd:
  - setenforce Permissive
  - echo
  - echo 'QEMU LAM Alaska Adding a swap partition'
- - echo '/dev/sdb1 swap swap defaults 0 0' >> /etc/fstab
+ - echo 'UUID=b1fe1a15-b4f4-446b-b277-a2b8dade48ca swap swap defaults 0 0' >> /etc/fstab
  - swapon --all
  - free
  - echo 'QEMU LAM swap space in use'
