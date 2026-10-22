@@ -214,6 +214,15 @@ runcmd:
  - echo 'QEMU LAM Installing arsc.lam1.us web site'
  - /var/www/gci/lam-gitlab-clone.bash arsc $keyName
  - echo
+ - echo 'QEMU LAM Alaska Installing cabo.lam1.us web site'
+ - /var/www/gci/lam-gitlab-clone.bash cabo $keyName
+ - echo
+ - echo 'QEMU LAM Alaska Installing cape_fairbanks.lam1.us web site'
+ - /var/www/gci/lam-gitlab-clone.bash cape_fairbanks $keyName
+ - echo
+ - echo 'QEMU LAM Alaska Installing olnes.lam1.us web site'
+ - /var/www/gci/lam-gitlab-clone.bash olnes $keyName
+ - echo
  - echo 'QEMU LAM ***** Final Initialization Steps *****'
  - echo
  - echo 'QEMU LAM add apache group to fedora'
@@ -224,7 +233,7 @@ runcmd:
  - sh -c "cd /var/www/lam;git add html/phpinfo.php"
  - echo
  - echo 'QEMU LAM Activate aws and additional sites'
- - /var/www/aws/qemu-lam-apache2-sites-configuration-Fedora.bash
+ - /var/www/gci/qemu-lam-apache2-sites-configuration-Fedora.bash
  - echo
  - echo 'QEMU LAM commit git changes from initialization'
  - /var/www/aws/AWS-LAM-git-commit.bash $keyName lam no-ssl
