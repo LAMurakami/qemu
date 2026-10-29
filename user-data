@@ -171,7 +171,7 @@ runcmd:
  - cp /var/www/aws/etc/profile.d/ssh_tunnel.sh /etc/profile.d
  - echo
  - echo 'QEMU LAM Alaska Installing ubuntu user bash resources'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/ubuntu.tgz --directory /home/ubuntu
+ - tar -xzf /mnt/ak20-ext4/Install/lam-ubuntu/ubuntu.tgz --directory /home/ubuntu
  - echo
  - echo 'QEMU LAM Add git_ak20_id_rsa key to root'
  - cp /home/ubuntu/.ssh/git_ak20_id_rsa /root/.ssh
@@ -179,7 +179,7 @@ runcmd:
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
  - echo 'QEMU LAM Installing Let-s Encrypt certificates for TLS encryption (HTTPS)'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/letsencrypt.tgz --directory /etc
+ - tar -xzf /mnt/ak20-Bk/Bk2/ak20/letsencrypt.tgz --directory /etc
  - echo
  - echo 'QEMU LAM Updating apache2 configuration for lam1'
  - a2enmod ssl
@@ -191,7 +191,7 @@ runcmd:
  - git config --system --add safe.directory /var/www/lam
  - echo
  # Extract lam from archive that includes MediWiki
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/lam.tgz --directory /var/www
+ - tar -xzf /mnt/ak20-ext4/Install/lam-ubuntu/lam.tgz --directory /var/www
  # Use ubuntu branch to serve secure site at https://ubuntu.lam1.us
  - sh -c "cd /var/www/lam;git stash"
  - sh -c "cd /var/www/lam;git checkout ubuntu"
