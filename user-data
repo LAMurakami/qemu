@@ -201,7 +201,7 @@ runcmd:
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
  - echo 'QEMU LAM Installing Let-s Encrypt certificates for TLS encryption (HTTPS)'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/letsencrypt.tgz --directory /etc
+ - tar -xzf /mnt/ak20-Bk/Bk2/ak20/letsencrypt.tgz --directory /etc
  - echo
  - echo 'QEMU LAM Updating apache2 configuration for lam1'
  - a2enmod ssl
