@@ -96,8 +96,8 @@ runcmd:
  - mount -a -t nfs4
  - df -Th --exclude-type=tmpfs --exclude-type=devtmpfs
  - echo
- - echo 'QEMU LAM Installing Amazon Linux 2 ec2-user bash resources for fedora user'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/Amazon-Linux-2023/ec2-user.tgz --directory /home/fedora
+ - echo 'QEMU LAM Installing fedora bash resources for fedora user'
+ - tar -xzf /mnt/ak20-ext4/Install/lam-fedora/fedora.tgz --directory /home/fedora
  - echo
  - echo 'QEMU LAM Copy ssh key root'
  - cp /home/fedora/.ssh/git_ak20_id_rsa /root/.ssh
@@ -139,7 +139,7 @@ runcmd:
  - echo 'QEMU LAM ***** Secure site *****'
  - echo
  - echo 'QEMU LAM Install Let-s Encrypt certificates for TLS encryption (HTTPS)'
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/aws-lam1-ubuntu/letsencrypt.tgz --directory /etc
+ - tar -xzf /mnt/ak20-Bk/Bk2/ak20/letsencrypt.tgz --directory /etc
  - echo
  - echo 'QEMU LAM Install no-ssl web site'
  - /var/www/gci/lam-gitlab-clone.bash no-ssl $keyName
@@ -152,7 +152,7 @@ runcmd:
  - echo
  - echo 'QEMU LAM Install lam web site'
  # Extract lam from archive that includes MediWiki
- - tar -xzf /mnt/ak20-Bk/Bk2/aws/efs/lam.tgz --directory /var/www
+ - tar -xzf /mnt/ak20-ext4/Install/lam-ubuntu/lam.tgz --directory /var/www
  # Use fedora branch to serve secure site at https://fedora.lam1.us
  - sh -c "cd /var/www/lam;git stash"
  - sh -c "cd /var/www/lam;git checkout fedora"
